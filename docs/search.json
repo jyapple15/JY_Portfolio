@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "jyapple15.github.io",
+    "title": "About Me",
     "section": "",
-    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites."
+    "text": "Hi, I’m Andrea! I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!"
   },
   {
     "objectID": "about.html",
@@ -12,5 +12,12 @@
     "title": "About",
     "section": "",
     "text": "About this site"
+  },
+  {
+    "objectID": "nm2207.html",
+    "href": "nm2207.html",
+    "title": "NM2207 Computational Media Literacy",
+    "section": "",
+    "text": "In this module, I learnt to code with R and created a data story as my final project. Click here find out about the work done prior to the final project."
   }
 ]

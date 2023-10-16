@@ -1,0 +1,6 @@
+---
+title: "NM2207 Computational Media Literacy"
+---
+
+In this module, I learnt to code with R and created a data story as my final project. Click <a href="https://github.com/jyapple15/NM2207_JY">here</a> find out about the work done prior to the final project.
+

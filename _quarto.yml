@@ -3,12 +3,13 @@ project:
   output-dir: docs
 
 website:
-  title: "jyapple15.github.io"
+  title: "Tan Jia Yi, Andrea"
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
+        text: About
+      - href: nm2207.qmd
+        text: NM2207
 
 format:
   html:
