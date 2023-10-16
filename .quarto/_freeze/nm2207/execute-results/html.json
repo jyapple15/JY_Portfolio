@@ -1,0 +1,16 @@
+{
+  "hash": "149aca416fff12f271ccd29542d2005a",
+  "result": {
+    "markdown": "---\ntitle: \"NM2207 Computational Media Literacy\"\n---\n\n\nIn this module, I learnt to code with R and created a data story as my final project, as presented below. Click <a href=\"https://github.com/jyapple15/NM2207_JY\">here</a> find out about the work done prior to the final project.\n\n<a href=\"datastory.qmd\">\n<img src=\"The_Smell_of_Fear.jpg\" width=100% alt=\"https://www.linkedin.com/pulse/smelling-fear-fearing-smells-penny-williams\"></img>\n</a>\nImage by Richard Osborne\n\n\n::: {.cell}\n::: {.cell-output-display}\n![](nm2207_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "nm2207_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

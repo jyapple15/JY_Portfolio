@@ -1,0 +1,9 @@
+---
+title: "Is the smell of fear real?"
+---
+
+```{r echo=FALSE}
+library(shiny)
+library(ggplot2)
+ggplot()+geom_point()
+```

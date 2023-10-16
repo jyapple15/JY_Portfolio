@@ -1,0 +1,16 @@
+{
+  "hash": "e8635048d641cc93ecf1ea0a5ccddfd7",
+  "result": {
+    "markdown": "---\ntitle: \"Is the smell of fear real?\"\n---\n\n::: {.cell}\n::: {.cell-output-display}\n![](datastory_files/figure-html/unnamed-chunk-1-1.png){width=672}\n:::\n:::",
+    "supporting": [
+      "datastory_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

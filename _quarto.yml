@@ -13,8 +13,8 @@ website:
 
 format:
   html:
-    theme: vapor
-    # or maybe minty?
+    theme: minty
+    # or maybe minty or vapor?
     css: styles.css
     toc: true
 

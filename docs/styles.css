@@ -1,1 +1,5 @@
 /* css styles */
+.button:hover {
+  transform: scale(1.03);
+  opacity: 80%;
+}

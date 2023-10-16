@@ -2,5 +2,16 @@
 title: "NM2207 Computational Media Literacy"
 ---
 
-In this module, I learnt to code with R and created a data story as my final project. Click <a href="https://github.com/jyapple15/NM2207_JY">here</a> find out about the work done prior to the final project.
+In this module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created a data story as my final project. 
 
+<u>Final Project</u><br>
+This final project communicates insights from the data source named "<a href="https://www.kaggle.com/datasets/jswicker/the-smell-of-fear/">The Smell of Fear</a>". It aims to answer the question whether a smell of fear exists.
+
+<!--https://www.linkedin.com/pulse/smelling-fear-fearing-smells-penny-williams-->
+<center><a href="datastory.qmd">
+<img src="The_Smell_of_Fear.jpg" width=80% class="button"></img>
+</a>
+<br>
+<small>Image by Richard Osborne</small></center>
+
+To find our more about my work done prior to this, click <a href="https://github.com/jyapple15/NM2207_JY">here</a>.
