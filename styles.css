@@ -3,3 +3,7 @@
   transform: scale(1.03);
   opacity: 80%;
 }
+
+.button {
+  border-radius: 25px;
+}
