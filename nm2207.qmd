@@ -22,4 +22,4 @@ This final project communicates insights from the data source named "<a href="ht
 
 <!--Others-->
 <br>
-To find our more about my work done prior to this, click <a href="https://github.com/jyapple15/NM2207_JY">here</a>.
+To find out more about my work done in this module prior to this final project, click <a href="https://github.com/jyapple15/NM2207_JY">here</a>!.
