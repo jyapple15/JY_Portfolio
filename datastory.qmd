@@ -1,9 +1,8 @@
 ---
 title: "Is the smell of fear real?"
+filters: 
+  - shinylive
 ---
-
-```{r echo=FALSE}
-library(shiny)
-library(ggplot2)
-ggplot()+geom_point()
-```
+<p>Placeholder for Write-up</p>
+<iframe height="150%" width="100%" frameborder="no" src="https://andrea-jy.shinyapps.io/datastory/"></iframe>
+Placeholder for Visualisations^

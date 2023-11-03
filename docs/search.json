@@ -2,9 +2,9 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "About Me",
+    "title": "Hi, I’m Andrea!",
     "section": "",
-    "text": "Hi, I’m Andrea! I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!"
+    "text": "I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!"
   },
   {
     "objectID": "about.html",
@@ -19,5 +19,19 @@
     "title": "NM2207 Computational Media Literacy",
     "section": "",
     "text": "In this module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created a data story as my final project.\n\n Final Project This final project communicates insights from the data source named “The Smell of Fear”. It aims to answer the question whether a smell of fear exists.\n\n\n     Image by Richard Osborne\n\n\n To find our more about my work done prior to this, click here."
+  },
+  {
+    "objectID": "datastory.html",
+    "href": "datastory.html",
+    "title": "Is the smell of fear real?",
+    "section": "",
+    "text": "Placeholder for Write-up\n\n\n\nPlaceholder for Visualisations^"
+  },
+  {
+    "objectID": "TEMP.html",
+    "href": "TEMP.html",
+    "title": "Old Faithful",
+    "section": "",
+    "text": "Number of bins:"
   }
 ]
