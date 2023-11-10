@@ -1,0 +1,81 @@
+```{r}
+# Packages
+library(tidyverse)
+library(ggplot2)
+library(gsignal)
+```
+
+```{r}
+# Importing Cleaned Datasets
+labelled_movies <- c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")
+#for(i in labelled_movies){assign(i,read_csv(sprintf("./src/data/cleaned/%s_cleaned.csv",i)))}
+
+# Importing Snipped Datasets
+for(i in c("ms_data","screen_times")){
+  assign(i,read_csv(sprintf("./src/data/cleaned/snipped_%s.csv",i)))
+}
+
+# Labelled ms_data (Only 6 diff movies)
+labelled_ms <- ms_data %>% dplyr::filter(!is.na(label))
+
+# Unlabelled ms_data (Excluding the buffer time before labelled movies start)
+unlabelled_ms <- ms_data %>% dplyr::filter(is.na(label) & !grepl(paste(labelled_movies, collapse="|"), movie))
+```
+
+```{r}
+
+
+```
+
+```{r}
+# Graph 1
+# A segmented bar plot of compound concentrations against compound mass labels. Bar plots will be segmented by total % concentration under each fear label. This will allow us to observe which compounds are most commonly present when in fear. Based on the observations, a narrowed list of compounds will be analysed in the later graphs (List A)
+
+Total_Conc <- ms_data[0,] %>% 
+  t() %>% 
+  data.frame(row.names = NULL) %>% 
+  mutate(Cmpd=colnames(ms_data)) %>% 
+  dplyr::filter(grepl("m\\d+|CO2",Cmpd)) %>%
+  mutate(Conc=NA)
+
+Total_Conc$Conc
+for(i in ms_data$m14.0028)
+
+for(i in c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")){
+  assign(i,read_csv(sprintf("./src/data/cleaned/%s_cleaned.csv",i)))
+}
+distinct(ms_data, movie)
+# 
+for(i in c("ms_data","screen_times")){
+  assign(i,read_csv(sprintf("./src/data/cleaned/snipped_%s.csv",i)))
+}
+```
+
+```{r}
+# Graph 2
+# A bar graph displaying the total concentration of a specific chosen compound under each scene label. This will give a clearer idea of the distribution of the selected compound across different types of scenes. This will only be for compounds in List A.
+
+```
+
+```{r}
+# Graph 3
+# Multiple box plots will be plot to display the distribution of a compound's concentration under different scene labels. This will give a clearer idea of the distribution of concentrations, instead of just the total concentration across all similar scenes.  This will only be for compounds in List A.
+
+```
+
+```{r}
+# Graph 4
+# A line graph for the concentration of a chosen compound against time. The time will reflect the duration into a movie. Meanwhile, the list of compounds is once again restricted to List A. Multiple graphs will be either faceted or overlaid to observe the trend for the different compounds in the same movie. Scenes/Points with fear labels will be highlighted.
+
+```
+
+```{r}
+# Graph 5
+# For a chosen compound, different screenings of the same movie are selected and the concentration of that compound against time is plot and overlaid for the different screenings. These screenings will be selected according to a criteria set by the user, such that the other variables for those screenings are relatively similar. This allows us to observe for any trends between the compound emission and factors such as the time of day, type of fear, and the influence of people.
+
+```
+
+```{r}
+# Graph 6
+# For the top fear compounds determined, their average emission will be tabulated for different movies, throughout the movie and across multiple screenings. This emission intensity will be plot against the online fear ratings for these movies to give an idea of whether the online ratings are an accurate reflection of our chemical reflection, vice versa.
+```

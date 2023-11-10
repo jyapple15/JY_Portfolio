@@ -1,0 +1,343 @@
+```{r}
+# Packages
+library(tidyverse)
+library(ggplot2)
+library(gsignal)
+```
+
+```{r}
+# Tidying Dataset: labels.csv
+label_names <- read_csv("./src/data/labels.csv")
+colnames(label_names)[3] <- "sub_label"
+
+for(i in 2:nrow(label_names)){
+  label_names$label[i] <- if_else(is.na(label_names$label[i]), 
+                                  label_names$label[i-1], 
+                                  label_names$label[i])
+}
+for(i in 1:nrow(label_names)){
+  label_names$sub_label[i] <- if_else(is.na(label_names$sub_label[i]), 
+                                      "general", label_names$sub_label[i])
+}
+
+# Tidying Dataset: screen_times
+screen_times <- read_csv("./src/data/screening_times.csv") %>% select(-OV,-HFR,-"3D", -begin)
+
+# Movie lengths from External Sources
+movie_lengths <- data.frame(tribble(
+  ~Pattern, ~Movie, ~Minutes, ~Lag_min, ~Buffer_min,
+  "& Sebastian", "Belle and Sebastian", 104,13.5,1.5,
+  "Bolshoi", "Bolshoi: Dornröschen", 138,37,0,
+  "Buddy", "Buddy", 94, 18.5,9, #22.5
+  "Carrie", "Carrie", 100,17.5,0,
+  "Counselor", "The Counselor", 117,10,2,
+  "Dinosaurier", "Dinosaurier - Im Reich der Giganten", 87, 16.5,5,
+  "Hobbit", "The Hobbit: The Desolation of Smaug", 161, 41.5,5,
+  "Christmas Star", "Journey to the Christmas Star", 80,15.5,0,
+  "Little Ghost", "The Little Ghost", 92,12,0,
+  "Machete", "Machete Kills", 107,23,0,
+  "Medicus", "The Physician", 150,33,0,
+  "Paranormal Activity", "Paranormal Activity: The Marked Ones", 84,25,0,
+  "Shakespeer", "Suck Me Shakespeer", 119,25.5,10,
+  "Hunger Games", "The Hunger Games: Catching Fire", 146,5,5,
+  "Starving Games", "The Starving Games", 83,14,10,
+  "Mitty", "The Secret Life of Walter Mitty", 114,18.5,8,
+  "Wolkig", "Cloudy with a Chance of Meatballs 2", 96,NA,0,
+)) %>% arrange(Movie)
+
+
+# Standardizing Movie Names and Adding Movie Duration
+screen_times <- screen_times %>% mutate(minutes = NA, lag_min = NA, buffer_min = NA)
+for(i in 1:length(movie_lengths$Movie)){
+  indices <- which(grepl(movie_lengths$Pattern[i], screen_times$movie))
+  for(j in indices){
+    screen_times$movie[j] <- movie_lengths$Movie[i]
+    screen_times$minutes[j] <- movie_lengths$Minutes[i]
+    screen_times$lag_min[j] <- movie_lengths$Lag_min[i]
+    screen_times$buffer_min[j] <- movie_lengths$Buffer_min[i]
+  }
+}
+
+# Tidying Dataset: ms_data
+ms_data <- read_csv("./src/data/TOF_CO2_data_30sec.csv")
+
+
+# Tidying Dataset: Movie Labels + EXPORT TO CSV
+extract_labels <- function(movie){
+  ori_labels <- read_csv(paste("./src/data/labels/", movie, ".csv", sep = ""), col_names = FALSE)
+  new_labels <- ori_labels %>% t() %>% data.frame()
+  colnames(new_labels) <- paste(label_names$label, label_names$sub_label, sep = ": ")
+  rownames(new_labels) <- seq(from=0, to=nrow(new_labels)*0.5-0.5, by=0.5)
+  return(new_labels)
+}
+
+# All except Hunger Games
+labelled_movies <- c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")
+
+for(i in labelled_movies[1:5]){
+  assign(i,extract_labels(i))
+}
+
+# Hunger Games
+Hunger <- extract_labels("Tribute") #Hunger Games
+```
+
+```{r}
+# Data Manipulation
+scheduled_to_Time <- function(scheduled){
+  scheduled <- sub("(..)-(..)-", "\\2/\\1/", scheduled)
+}
+
+# Create a list for relevant movies (Scheduled start times)
+t_start_ind <- c()
+movie_ind <- c()
+for(i in 1:nrow(screen_times)){
+  
+  # To remove wrong entry
+  if(i==97){next}
+  
+  index_mstart <- which(grepl(scheduled_to_Time(screen_times$scheduled[i]), ms_data$Time))[1]
+  if(is.na(index_mstart)){next}
+  
+  # To remove movies lacking data entries (Assumes none <= 80min)
+  if(length(t_start_ind)>1 && index_mstart - t_start_ind[length(t_start_ind)] <= 160){
+    t_start_ind <- t_start_ind[1:length(t_start_ind)-1]
+    movie_ind <- movie_ind[1:length(movie_ind)-1]
+  }
+  
+  t_start_ind <- c(t_start_ind,index_mstart)
+  movie_ind <- c(movie_ind, if_else(is.na(index_mstart), NA, i))
+}
+
+#Create a list of relevant end timings
+t_end_ind <- c()
+for(i in 1:length(t_start_ind)){
+  Ave_lag_t <- 2*screen_times$lag_min[movie_ind[i]]
+  Lag_buffer <- 2*screen_times$buffer_min[movie_ind[i]]
+  #Lag_buffer <- 9
+  Duration <- 2*screen_times$minutes[movie_ind[i]]
+  
+  end_index <- t_start_ind[i] + Duration + Ave_lag_t
+  min_end_index <- end_index - Lag_buffer
+  max_end_index <- end_index + Lag_buffer
+  
+  
+  narrowed_data <- ms_data %>% slice(min_end_index:max_end_index)
+  #peak <- narrowed_data %>% dplyr::filter(!is.na(CO2),CO2==max(CO2))
+  peak <- which.max(narrowed_data$CO2) + min_end_index -1
+  
+  if(length(peak)!=0){
+    if(length(peak)>1){
+      z <- Lag_buffer
+      for(j in peak){
+        if(abs(j-end_index) < z){
+          z <- abs(j-end_index)
+          interest <- j
+        }
+      }
+      end_index <- interest
+    }else{
+      end_index <- peak
+    }
+  }
+  t_end_ind <- c(t_end_ind, end_index)
+}
+
+# Snipped screen_times --> TO EXPORT CSV (Final_screen_times)
+Final_screen_times <- data.frame(screen_times[movie_ind,])
+write.csv(Final_screen_times, "./src/data/cleaned/snipped_screen_times.csv", row.names=FALSE)
+
+# Adding movie labels to ms_data (NA = no movie)
+ms_data <- ms_data %>% mutate(movie=NA, movie_F_ind=NA)
+for(i in 1:length(t_start_ind)){
+  ms_data$movie[t_start_ind[i]:t_end_ind[i]] <- Final_screen_times$movie[i]
+  ms_data$movie_F_ind[t_start_ind[i]:t_end_ind[i]] <- i
+}
+
+
+# ms_data with scene labels
+# for actual start to end for 6 diff movies; NA = Unknown scene
+ms_data <- ms_data %>% mutate(label=NA)
+labelled_ms <- data.frame(ms_data[0,])
+is.one <- function(number){
+  if_else(number==1, TRUE, FALSE)
+}
+
+for(name in labelled_movies){
+  label_set <- eval(as.name(name))
+  length <- nrow(eval(as.name(name)))
+  
+  to_label <- ms_data %>% dplyr::filter(grepl(name, movie)) %>% distinct(movie_F_ind)
+  typeof(to_label[[1]])
+  rel_screenings_ind <- to_label[[1]]
+  
+  t_end_ind[rel_screenings_ind]
+  t_end_ind[rel_screenings_ind]-length
+  for(j in 1:length){
+    act_start_ind <- t_end_ind[rel_screenings_ind]-length+1
+    labelled <- label_set[j,] %>% select_if(is.one)
+    if(length(labelled)==0){
+      ms_data$label[act_start_ind + j - 1] <- "Others"
+    } else{
+      ms_data$label[act_start_ind + j - 1] <- paste(colnames(labelled), collapse="; ")
+    }
+  }
+}
+
+# Snipped ms_data --> TO EXPORT CSV (valid_ms)
+valid_ms <- data.frame(ms_data[0,])
+for(i in 1:length(t_start_ind)){
+  est_act_start_ind <- t_end_ind[i]-2*screen_times$minutes[movie_ind[i]] + 1
+  valid_ms <- rbind(valid_ms, ms_data[est_act_start_ind:t_end_ind[i],])
+}
+write.csv(valid_ms, "./src/data/cleaned/snipped_ms_data.csv", row.names=FALSE)
+```
+
+```{r}
+# Personal Overview :)
+
+# Duplicate reading at screen_times index = 97 and 98
+# CO2 plot shows 227 visitors should be the correct entry (OR, 227+2)
+screen_times 
+
+# Differences in movie names for screen_times
+count(screen_times, movie)
+
+# Some timings are skipped
+ms_data[54695:54781,]
+
+# NA values present for some CO2
+ms_data %>% dplyr::filter(is.na(CO2))
+
+# NA values analysed
+
+data.frame(ms_data[264:862,]) %>% ggplot()+aes(y=CO2, x=Time)+geom_point()
+data.frame(ms_data[3156:6023,]) %>% ggplot()+aes(y=CO2, x=Time)+geom_point()
+data.frame(ms_data[17114:17472,]) %>% ggplot()+aes(y=CO2, x=Time)+geom_point()
+data.frame(ms_data[46875:47234,]) %>% ggplot()+aes(y=CO2, x=Time)+geom_point()
+
+# Note: Not all peaks are certain/ with sharp peaks
+```
+
+
+#Back up Codes
+
+```{r eval=FALSE}
+extract_labels <- function(movie, new_name=movie){
+  ori_labels <- read_csv(paste("./src/data/labels/", movie, ".csv", sep = ""), col_names = FALSE)
+  new_labels <- ori_labels %>% t() %>% data.frame()
+  colnames(new_labels) <- paste(label_names$label, label_names$sub_label, sep = ": ")
+  rownames(new_labels) <- seq(from=0, to=nrow(new_labels)*0.5-0.5, by=0.5)
+  write.csv(new_labels, sprintf("./src/data/cleaned/%s_cleaned.csv",new_name), row.names=FALSE)
+}
+```
+
+```{r eval=FALSE}
+# Attempt 5: Fixed start and end time (FINALISED)
+t_end_ind <- c()
+for(i in 1:length(t_start_ind)){
+  Ave_lag_t <- 2*screen_times$lag_min[movie_ind[i]]
+  Lag_buffer <- 2*screen_times$buffer_min[movie_ind[i]]
+  #Lag_buffer <- 9
+  Duration <- 2*screen_times$minutes[movie_ind[i]]
+  
+  end_index <- t_start_ind[i] + Duration + Ave_lag_t
+  min_end_index <- end_index - Lag_buffer
+  max_end_index <- end_index + Lag_buffer
+  
+  
+  narrowed_data <- ms_data %>% slice(min_end_index:max_end_index)
+  #peak <- narrowed_data %>% dplyr::filter(!is.na(CO2),CO2==max(CO2))
+  peak <- which.max(narrowed_data$CO2) + min_end_index -1
+  
+  if(length(peak)!=0){
+    if(length(peak)>1){
+      z <- Lag_buffer
+      for(j in peak){
+        if(abs(j-end_index) < z){
+          z <- abs(j-end_index)
+          interest <- j
+        }
+      }
+      end_index <- interest
+    }else{
+      end_index <- peak
+    }
+  }
+  t_end_ind <- c(t_end_ind, end_index)
+  
+  graph<-data.frame(ms_data[t_start_ind[i]:(t_start_ind[i]+500),]) %>% ggplot()+aes(y=CO2, x=Time) + geom_point() + geom_point(data = data.frame(ms_data[t_end_ind[i],]), color = "red") + geom_point(data = data.frame(ms_data[t_end_ind[i]-2*screen_times$minutes[movie_ind[i]],]), color = "red") + labs(title=screen_times$movie[movie_ind[i]], subtitle = i) + geom_point(data = data.frame(ms_data[min_end_index,]), color = "blue") + geom_point(data = data.frame(ms_data[max_end_index,]), color = "blue") + geom_point(data = data.frame(ms_data[t_start_ind[i] + Duration + Ave_lag_t,]), color = "blue")
+  print(graph)
+}
+```
+
+```{r eval=FALSE}
+# Scene labelling
+# LONG RUN TIME
+to_label <- ms_data %>% dplyr::filter(grepl("Hobbit|Buddy|Mitty|Machete|Hunger|Paranormal", movie)) %>% distinct(movie_F_ind)
+
+ms_data <- ms_data %>% mutate(label=NA)
+labelled_ms <- data.frame(ms_data[0,])
+is.one <- function(number){
+  if_else(number==1, TRUE, FALSE)
+}
+
+for(name in labelled_movies){
+  label_set <- eval(as.name(name))
+  length <- nrow(eval(as.name(name)))
+  for(i in to_label$movie_F_ind){
+    act_start_ind <- t_end_ind[i]-length + 1
+    for(j in 1:length){
+      labelled <- label_set[j,] %>% select_if(is.one)
+      if(length(labelled)==0){
+        ms_data$label[act_start_ind + j - 1] <- "Others"
+      } else{
+        ms_data$label[act_start_ind + j - 1] <- paste(colnames(labelled), collapse="; ")
+      }
+    }
+    labelled_ms_temp <- ms_data[act_start_ind:t_end_ind[i],]
+    labelled_ms <- rbind(labelled_ms, labelled_ms_temp)
+  }
+}
+```
+
+#Unused/ Old Versions of Code
+
+```{r eval=FALSE}
+# NOT USED
+# Attempt 3: GREAT & FINAL, except for parts i=37, i=96, 
+Ave_credits_t <- 20*2 #Originally 15*2
+Ave_ad_t <- 45*2 #30*2
+
+t_end_ind <- c()
+for(i in 1:length(t_start_ind)){
+  start_index <- t_start_ind[i]
+  latest_end_index <- if_else((t_start_ind[i] + 2*screen_times$minutes[movie_ind[i]] + Ave_ad_t + Ave_credits_t) >= t_start_ind[i+1] && !is.na(t_start_ind[i+1]), t_start_ind[i+1], t_start_ind[i] + 2*screen_times$minutes[movie_ind[i]] + Ave_ad_t)
+  earliest_end_index <- if_else(latest_end_index==t_start_ind[i+1]&& !is.na(t_start_ind[i+1]),t_start_ind[i+1]-Ave_credits_t-Ave_ad_t,t_start_ind[i] + 2*screen_times$minutes[movie_ind[i]] - Ave_credits_t - Ave_ad_t)
+  
+  #NA VALUES
+  if(!anyNA(ms_data$CO2[earliest_end_index:latest_end_index])){
+    to_analyse <- ms_data %>% slice(seq(from=earliest_end_index, to=latest_end_index, by=1))
+    
+    peak <- data.frame(gsignal::findpeaks(to_analyse$CO2))
+    narrowed_peak <- peak %>% dplyr::filter((height - ms_data$CO2[(loc+earliest_end_index+6)] > 30) & (height >= ms_data$CO2[loc+earliest_end_index-1])) #[10,17,8][10,34,1] #Modify height <..., currently never-ending loop
+    count <- 0
+    while(length(narrowed_peak$pks)==0){
+      ## FIND A SOLUTION
+      narrowed_peak <- peak %>% dplyr::filter((height - ms_data$CO2[(loc+earliest_end_index+6)]) > (30 - count) & height >= ms_data$CO2[loc+earliest_end_index-1])
+      count <- count + 1
+    }
+    if(length(narrowed_peak)>1){
+      narrowed_peak <- narrowed_peak %>% dplyr::filter(loc == min(loc))
+    }
+    chosen_peak <- narrowed_peak %>% dplyr::filter(height == max(height))
+    index_mend <- chosen_peak$loc + earliest_end_index
+    t_end_ind <- c(t_end_ind, index_mend)#Last movie may be ~5min off
+    
+    graph<-data.frame(ms_data[t_start_ind[i]:if_else(i==length(t_start_ind), t_start_ind[i]+500,t_start_ind[i+1]),]) %>% ggplot()+aes(y=CO2, x=Time) + geom_point() + geom_point(data = data.frame(ms_data[t_end_ind[i],]), color = "red") + geom_point(data = data.frame(ms_data[t_end_ind[i]-2*screen_times$minutes[movie_ind[i]],]), color = "red") + geom_point(data = data.frame(ms_data[earliest_end_index,]), color = "blue") + geom_point(data = data.frame(ms_data[latest_end_index,]), color = "blue") + labs(title=i)
+    print(graph)
+  } else {
+    t_end_ind <- c(t_end_ind, NA)
+  }
+}
+```
