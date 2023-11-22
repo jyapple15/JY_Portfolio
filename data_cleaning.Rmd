@@ -204,15 +204,17 @@ valid_ms$Time <- factor(valid_ms$Time,
 valid_ms <- valid_ms %>%
   dplyr::filter(!is.na(label) | (is.na(label) & !grepl(paste(labelled_movies, collapse="|"), movie))) %>%
   group_by(movie_F_ind) %>% #To add a counter common to movie duplicates
-  mutate(counter = row_number(movie_F_ind)) %>% #To compile all cmpds in 1 column
+  mutate(counter = row_number(movie_F_ind))%>% #To compile all cmpds in 1 column
   pivot_longer(
     cols = matches("^\\d"),
     names_to = "cmpd",
     values_to = "conc"
   ) %>% #To correct for noise in baseline + Conc per pax
-  mutate(conc=if_else(conc<0|is.na(conc), 0,conc),
-         conc_perpax = conc/Final_screen_times$number.visitors[movie_F_ind]) %>%
-  ungroup()
+  mutate(conc=if_else(conc<0|is.na(conc), 0,conc)) %>% ungroup() %>%
+  pivot_wider(
+    names_from = "cmpd",
+    values_from = c("conc")
+  )
 
 write.csv(valid_ms, "./src/data/cleaned/snipped_ms_data.csv", row.names=FALSE)
 ```
@@ -326,6 +328,21 @@ for(name in labelled_movies){
 ```
 
 #Unused/ Old Versions of Code
+
+```{r eval = FALSE}
+valid_ms <- valid_ms %>%
+  dplyr::filter(!is.na(label) | (is.na(label) & !grepl(paste(labelled_movies, collapse="|"), movie))) %>%
+  group_by(movie_F_ind) %>% #To add a counter common to movie duplicates
+  mutate(counter = row_number(movie_F_ind)) %>% #To compile all cmpds in 1 column
+  pivot_longer(
+    cols = matches("^\\d"),
+    names_to = "cmpd",
+    values_to = "conc"
+  ) %>% #To correct for noise in baseline + Conc per pax
+  mutate(conc=if_else(conc<0|is.na(conc), 0,conc),
+         conc_perpax = conc/Final_screen_times$number.visitors[movie_F_ind]) %>%
+  ungroup()
+```
 
 ```{r eval=FALSE}
 # NOT USED

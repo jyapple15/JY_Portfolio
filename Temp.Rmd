@@ -18,7 +18,14 @@ for(i in c("ms_data","screen_times")){
 }
 
 # Labelled ms_data (Only 6 diff movies)
-labelled_ms <- ms_data %>% dplyr::filter(!is.na(label))
+labelled_ms <- ms_data %>% 
+  dplyr::filter(!is.na(label)) %>%
+  pivot_longer(
+    cols = matches("^\\d"),
+    names_to = "cmpd",
+    values_to = "conc"
+  ) %>% 
+  mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind])
 
 exp_labelled_ms <- labelled_ms %>% #To separate labels
   separate_longer_delim(

@@ -16,15 +16,25 @@ options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.siz
 
 # Importing Cleaned Datasets
 labelled_movies <- c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")
-#for(i in labelled_movies){assign(i,read_csv(sprintf("./src/data/cleaned/%s_cleaned.csv",i)))}
 
 # Importing Snipped Datasets
 for(i in c("ms_data","screen_times")){
   assign(i,read_csv(sprintf("./src/data/cleaned/snipped_%s.csv",i)))
 }
 
+ms_data <- ms_data %>%
+  pivot_longer(
+    cols = matches("^\\d"),
+    names_to = "cmpd",
+    values_to = "conc"
+  ) %>% 
+  mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind])
+
+
 # Labelled ms_data (Only 6 diff movies)
-labelled_ms <- ms_data %>% dplyr::filter(!is.na(label))
+labelled_ms <- ms_data %>% 
+  dplyr::filter(!is.na(label))
+  
 
 exp_labelled_ms <- labelled_ms %>% #To separate labels
   separate_longer_delim(
@@ -359,12 +369,26 @@ server <- function(input, output){
   user_cmpd_4 <- reactive(input$graph_4_cmpd)
   
   # Interactive UI (Screen 4) TODO Select all: https://stackoverflow.com/questions/28829682/r-shiny-checkboxgroupinput-select-all-checkboxes-by-click
+  # NOTE: Mistake -> needa filter user_movie_4() --> BUT, when did that, error --> should try reactive({}) or filter through screen_times next
+  user_movie_4_indices <- reactive(distinct(labelled_ms,user_movie_4(),movie_F_ind)$movie_F_ind) 
+  
+  ui_4_checkbox <- reactive({
+    list <- tagList()
+    for(i in user_movie_4_indices()){
+      list <- append(list, div(
+        p(paste("Screening No.:", i)),
+        p(paste("Screening No.:", i)),
+        p(paste("Screening No.:", i))
+        ))
+    }
+  })
+  
   output$checkbox_screen_4 <- renderUI({ 
     checkboxGroupInput(inputId = "graph_4_details",
                        label = "Select desired screenings",
-                       selected = reactive(distinct(user_movie_4(),movie_F_ind)$movie_F_ind),
-                       choiceNames = list(tags$a(), tags$a(),tags$a(),tags$a(),tags$a(),tags$a()),
-                       choiceValues = reactive(distinct(user_movie_4(),movie_F_ind)$movie_F_ind))  
+                       selected = user_movie_4_indices(),
+                       choiceNames = user_movie_4_indices(),
+                       choiceValues = user_movie_4_indices())  
   })
   
   graph_4 <- reactive(tidied_labelled_ms() %>% arrange(is.fear) %>%
@@ -400,7 +424,7 @@ server <- function(input, output){
            fill = "Type of Scene") + 
       theme(panel.background = element_blank()) + 
       scale_fill_manual(values = colour_bkg) +
-      scale_color_manual(values = colour_palette, labels=LETTERS) +
+      scale_color_manual(values = colour_palette) +
       scale_x_continuous(expand = c(0, 0)) + 
       scale_y_continuous(expand = c(0, 0))
   })
