@@ -25,29 +25,29 @@ screen_times <- read_csv("./src/data/screening_times.csv") %>% select(-OV,-HFR,-
 
 # Movie lengths from External Sources
 movie_lengths <- data.frame(tribble(
-  ~Pattern, ~Movie, ~Minutes, ~Lag_min, ~Buffer_min,
-  "& Sebastian", "Belle and Sebastian", 104,13.5,1.5,
-  "Bolshoi", "Bolshoi: Dornröschen", 138,37,0,
-  "Buddy", "Buddy", 94, 18.5,9, #22.5
-  "Carrie", "Carrie", 100,17.5,0,
-  "Counselor", "The Counselor", 117,10,2,
-  "Dinosaurier", "Dinosaurier - Im Reich der Giganten", 87, 16.5,5,
-  "Hobbit", "The Hobbit: The Desolation of Smaug", 161, 41.5,5,
-  "Christmas Star", "Journey to the Christmas Star", 80,15.5,0,
-  "Little Ghost", "The Little Ghost", 92,12,0,
-  "Machete", "Machete Kills", 107,23,0,
-  "Medicus", "The Physician", 150,33,0,
-  "Paranormal Activity", "Paranormal Activity: The Marked Ones", 84,25,0,
-  "Shakespeer", "Suck Me Shakespeer", 119,25.5,10,
-  "Hunger Games", "The Hunger Games: Catching Fire", 146,5,5,
-  "Starving Games", "The Starving Games", 83,14,10,
-  "Mitty", "The Secret Life of Walter Mitty", 114,18.5,8,
-  "Wolkig", "Cloudy with a Chance of Meatballs 2", 96,NA,0,
+  ~Pattern, ~Movie, ~Minutes, ~Lag_min, ~Buffer_min, ~Fear_rating,
+  "& Sebastian", "Belle and Sebastian", 104,13.5,1.5,1.5,
+  "Bolshoi", "Bolshoi: Dornröschen", 138,37,0,0,
+  "Buddy", "Buddy", 94, 18.5,9,0,
+  "Carrie", "Carrie", 100,17.5,0,3.275,
+  "Counselor", "The Counselor", 117,10,2,3.4167,
+  "Dinosaurier", "Dinosaurier - Im Reich der Giganten", 87, 16.5,5,1,
+  "Hobbit", "The Hobbit: The Desolation of Smaug", 161, 41.5,5,1.5,
+  "Christmas Star", "Journey to the Christmas Star", 80,15.5,0,1,
+  "Little Ghost", "The Little Ghost", 92,12,0,1,
+  "Machete", "Machete Kills", 107,23,0,2.5,
+  "Medicus", "The Physician", 150,33,0,0,
+  "Paranormal Activity", "Paranormal Activity: The Marked Ones", 84,25,0,3.275,
+  "Shakespeer", "Suck Me Shakespeer", 119,25.5,10,0,
+  "Hunger Games", "The Hunger Games: Catching Fire", 146,5,5,2,
+  "Starving Games", "The Starving Games", 83,14,10,2,
+  "Mitty", "The Secret Life of Walter Mitty", 114,18.5,8,1,
+  "Wolkig", "Cloudy with a Chance of Meatballs 2", 96,NA,0,0.5,
 )) %>% arrange(Movie)
 
 
 # Standardizing Movie Names and Adding Movie Duration
-screen_times <- screen_times %>% mutate(minutes = NA, lag_min = NA, buffer_min = NA)
+screen_times <- screen_times %>% mutate(minutes = NA, lag_min = NA, buffer_min = NA, fear_rating = NA)
 for(i in 1:length(movie_lengths$Movie)){
   indices <- which(grepl(movie_lengths$Pattern[i], screen_times$movie))
   for(j in indices){
@@ -55,6 +55,7 @@ for(i in 1:length(movie_lengths$Movie)){
     screen_times$minutes[j] <- movie_lengths$Minutes[i]
     screen_times$lag_min[j] <- movie_lengths$Lag_min[i]
     screen_times$buffer_min[j] <- movie_lengths$Buffer_min[i]
+    screen_times$fear_rating[j] <- movie_lengths$Fear_rating[i]
   }
 }
 
@@ -190,6 +191,29 @@ for(i in 1:length(t_start_ind)){
   est_act_start_ind <- t_end_ind[i]-2*screen_times$minutes[movie_ind[i]] + 1
   valid_ms <- rbind(valid_ms, ms_data[est_act_start_ind:t_end_ind[i],])
 }
+
+# Discard column where all values are NA + Rename cmpds to exclude "m"
+valid_ms <- valid_ms %>% 
+  discard(function(x){all((is.na(x)|x<0) & is.numeric(x))}) %>%  
+  rename_if(grepl("^m\\d", names(.)), ~ sub("m","",.))
+
+# Set factor for Time Column to scale with actual time
+valid_ms$Time <- factor(valid_ms$Time,
+                        levels=unique(valid_ms$Time))
+
+valid_ms <- valid_ms %>%
+  dplyr::filter(!is.na(label) | (is.na(label) & !grepl(paste(labelled_movies, collapse="|"), movie))) %>%
+  group_by(movie_F_ind) %>% #To add a counter common to movie duplicates
+  mutate(counter = row_number(movie_F_ind)) %>% #To compile all cmpds in 1 column
+  pivot_longer(
+    cols = matches("^\\d"),
+    names_to = "cmpd",
+    values_to = "conc"
+  ) %>% #To correct for noise in baseline + Conc per pax
+  mutate(conc=if_else(conc<0|is.na(conc), 0,conc),
+         conc_perpax = conc/Final_screen_times$number.visitors[movie_F_ind]) %>%
+  ungroup()
+
 write.csv(valid_ms, "./src/data/cleaned/snipped_ms_data.csv", row.names=FALSE)
 ```
 
