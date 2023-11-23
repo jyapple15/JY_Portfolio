@@ -475,7 +475,6 @@ graph_4 <- tidied_labelled_ms %>% arrange(is.fear) %>%
 # FOR SCREENING SELECTION (TODO)
 # %>% dplyr::filter(movie_F_ind %in% c(99,100))
   
-selected_screenings <- c(99,100)
 #TODO: Uncheck screenings that are in removed_screens
 
 graph_4_info <- ms_data %>% 
@@ -508,10 +507,14 @@ graph_4_height_info <-
   mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>% 
   '[['(`user_cmpd_4`)
 
+
+selected_screenings <- c(99,100)
 ms_data %>% 
   dplyr::filter(!is.na(label),
-                movie == user_movie_4,
-                movie_F_ind %in% selected_screenings) %>%
+                movie == user_movie_4) %>%
+  {if(length(selected_screenings != 0)) {if(.$movie[1] %in% screen_times$movie[selected_screenings]) dplyr::filter(., movie_F_ind %in% selected_screenings) else(.)} else(.)} %>% distinct(movie_F_ind)
+
+%>%
   select(user_cmpd_4,counter,label,movie_F_ind) %>%
   pivot_longer(
       cols = matches("^\\d"),
@@ -540,10 +543,10 @@ ms_data %>%
        fill = "Type of Scene") + 
   theme(panel.background = element_blank()) + 
   scale_fill_manual(values = colour_bkg) +
-  scale_color_manual(values = colour_palette, labels=LETTERS) +
+  scale_color_manual(values = colour_palette) +
   scale_x_continuous(expand = c(0, 0)) + 
   scale_y_continuous(expand = c(0, 0))
-
+screen_times$movie[movie]
 # Print Screening Details (By clicking on label) (TODO)
 graph_4 %>% distinct(movie_F_ind) %>% arrange(movie_F_ind)
 # movie A 

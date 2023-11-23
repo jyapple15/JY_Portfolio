@@ -2,6 +2,7 @@ library(shiny)
 library(shinyglide)
 library(tidyverse)
 library(ggplot2)
+library(shinythemes)
 library(shinycssloaders)
 library(rlist)
 
@@ -9,6 +10,9 @@ library(rlist)
 colour_palette <- c("#a9a9f9","#009699","maroon","red","orange","yellow","palegreen","green","lightblue","blue","purple","pink","green","lightblue","blue","purple","pink","pink","green","lightblue","blue","purple","pink")
 colour_gradient <- c("#009699","royalblue","#a9a9f9") #Low to high conc
 colour_bkg <- c("#a9a9f9","#009699") #contrasting w each other and w palette
+
+# Spinner Options
+options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=2)
 
 # Importing Snipped Datasets
 for(i in c("ms_data","screen_times","label_set")){
@@ -21,6 +25,7 @@ fear_labels <- grep("death|suspense|horror|murder|aggressive|violence|shock",
 
 # Any pics etc. need to be in www folder
 ui <- fluidPage(
+  shinythemes::themeSelector(),
   tags$link(rel = "stylesheet", href = "styles.css"), #In www folder
   titlePanel("Is the smell of fear real?"),
   
@@ -119,7 +124,8 @@ ui <- fluidPage(
             ui_element = plotOutput("graph_4"),
             image = "loading_ghost.gif",
             image.width = "400px"
-          )
+          ),
+          uiOutput("checkbox_screen_4") #TODO
         ),
         sidebarPanel(
           radioButtons(
@@ -127,8 +133,6 @@ ui <- fluidPage(
             label = "Select a movie:",
             choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie
           ),
-          actionButton(inputId = "graph_4_modify", 
-                       label = "Modify Screenings"),
           uiOutput("select_screen_4")
         )
       )
@@ -141,19 +145,16 @@ ui <- fluidPage(
       ),
       sidebarLayout(
         mainPanel(
-          tabsetPanel(type = "tabs",
-                      tabPanel("Distribution", 
-                               withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
-                                 ui_element = plotOutput("graph_5a"),
-                                 image = "loading_ghost.gif",
-                                 image.width = "400px"
-                               )),
-                      tabPanel("vs Fear Ratings", 
-                               withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
-                                 ui_element = plotOutput("graph_5b"),
-                                 image = "loading_ghost.gif",
-                                 image.width = "400px"
-                               )))
+          withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
+            ui_element = plotOutput("graph_5a"),
+            image = "loading_ghost.gif",
+            image.width = "400px"
+          ),
+          withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
+            ui_element = plotOutput("graph_5b"),
+            image = "loading_ghost.gif",
+            image.width = "400px"
+          )
         ),
         sidebarPanel(
           uiOutput("select_screen_5"),
@@ -176,7 +177,7 @@ ui <- fluidPage(
 
 #Tabset panel for tabs (Example 6) runExample("06_tabsets")
 
-server <- function(input, output, session){
+server <- function(input, output){
   #https://mastering-shiny.org/action-graphics.html
   
   fear_labels <- reactive(input$whats_fear)
@@ -238,7 +239,6 @@ server <- function(input, output, session){
             axis.ticks.y = element_blank(),
             axis.title.y = element_text(margin = margin(r = 10)),
             axis.title.x = element_text(margin = margin(t = 10)),
-            axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))),
             plot.subtitle = element_text(margin = margin(b = 10))
       ) + 
       scale_x_continuous(expand = c(0, 0))
@@ -271,8 +271,7 @@ server <- function(input, output, session){
            subtitle = paste(if_else(zeros() == FALSE, "Excludes", "Includes"), "data points where compound is absent"),
            y = "Type of Scene", 
            x = "Concentration per Pax per Scene") + 
-      scale_fill_gradientn(colours = colour_gradient) + 
-      theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))))
+      scale_fill_gradientn(colours = colour_gradient)
     })
   
   #Screen 3
@@ -338,7 +337,6 @@ server <- function(input, output, session){
            color = "Type of Scene") + 
       theme(axis.text.y = element_text(size=5),
             axis.text.x = element_text(size=5),
-            axis.line = element_line(linewidth = 0.1, arrow = arrow(type='closed', length = unit(2,'pt'))),
             strip.text = element_text(size=6, margin=margin(t=1,b=2)),
             strip.background.x = element_rect(fill=colour_palette),
             panel.spacing = unit(1, "lines"),
@@ -381,33 +379,22 @@ server <- function(input, output, session){
     return(list)
   })
   
-  observeEvent(input$graph_4_modify, {
-    showModal(
-      modalDialog(
-        checkboxGroupInput(inputId = "graph_4_screenings",
-                           label = "Select desired screenings:",
-                           selected = selected_screenings(),
-                           choiceNames = ui_4_screens(),
-                           choiceValues = user_movie_4_indices(),
-                           inline = TRUE), #TODO
-        footer = modalButton("Done")
-      )
-    )
+  output$checkbox_screen_4 <- renderUI({ 
+    checkboxGroupInput(inputId = "graph_4_screenings",
+                       label = "Select desired screenings:",
+                       selected = user_movie_4_indices(),
+                       choiceNames = ui_4_screens(),
+                       choiceValues = user_movie_4_indices(),
+                       inline = TRUE)  
   })
-  #TODO: Set min for checkbox
-  #observe({
-   # if(length(input$SelecetedVars) < my_min){
-    #  updateCheckboxGroupInput(session, "SelecetedVars", selected= "a1")
-    #}
-  #})
   
   selected_screenings <- reactive(input$graph_4_screenings)
   
   graph_4_info <- reactive(
     ms_data %>% 
       dplyr::filter(!is.na(label),
-                    movie == user_movie_4()) %>% #ISSUE IS THAT screen_times$movie[...] gives c(NA,NA,NA,NA,NA,NA)
-      {if(length(selected_screenings() != 0)) {if(all(selected_screenings() %in% which(screen_times$movie == user_movie_4()))) dplyr::filter(., movie_F_ind %in% selected_screenings()) else(.)} else(.)} %>%
+                    movie == user_movie_4(),
+                    movie_F_ind %in% selected_screenings()) %>%
       select(user_cmpd_4(),counter,label,movie_F_ind) %>%
       group_by(movie_F_ind) %>%
       pivot_longer(
@@ -425,8 +412,8 @@ server <- function(input, output, session){
   graph_4_height_info <- reactive(
     ms_data %>%
       dplyr::filter(!is.na(label),
-                  movie == user_movie_4()) %>%
-      {if(length(selected_screenings() != 0)) {if(all(selected_screenings() %in% which(screen_times$movie == user_movie_4()))) dplyr::filter(., movie_F_ind %in% selected_screenings()) else(.)} else(.)} %>%
+                  movie == user_movie_4(),
+                  movie_F_ind %in% selected_screenings()) %>%
       pivot_longer(
         cols = matches("^\\d"),
         names_to = "cmpd",
@@ -440,8 +427,8 @@ server <- function(input, output, session){
   output$graph_4 <- renderPlot({
     ms_data %>% 
       dplyr::filter(!is.na(label),
-                    movie == user_movie_4()) %>%
-      {if(length(selected_screenings() != 0)) {if(all(selected_screenings() %in% which(screen_times$movie == user_movie_4()))) dplyr::filter(., movie_F_ind %in% selected_screenings()) else(.)} else(.)} %>%
+                    movie == user_movie_4(),
+                    movie_F_ind %in% selected_screenings()) %>%
       select(user_cmpd_4(),counter,label,movie_F_ind) %>%
       pivot_longer(
         cols = matches("^\\d"),
@@ -468,8 +455,7 @@ server <- function(input, output, session){
            x = "Duration of Movie (min)",
            color = "Screening",
            fill = "Type of Scene") + 
-      theme(panel.background = element_blank(),
-            axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt')))) + 
+      theme(panel.background = element_blank()) + 
       scale_fill_manual(values = colour_bkg) +
       scale_color_manual(values = colour_palette) +
       scale_x_continuous(expand = c(0, 0)) + 
@@ -499,8 +485,7 @@ server <- function(input, output, session){
       geom_boxplot() +
       labs(x = "Concentration per Pax per Scene", 
            y = "Movie",
-           title = paste("Distribution of compound with m/z =", user_cmpd_5())) +
-      theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))))
+           title = paste("Distribution of compound with m/z =", user_cmpd_5()))
   })
   
   output$graph_5b <- renderPlot({
@@ -525,9 +510,8 @@ server <- function(input, output, session){
            y = "Average Concentration per Pax per Scene",
            title = "Comparison of Actual and Expected Fear Ratings", 
            subtitle = paste("Based on compound with m/z =",user_cmpd_5()), 
-           caption = "Fear ratings are an average of rating obtained from Reel Scary and Common Sense Media") + 
-      theme(plot.caption = element_text(hjust=0),
-            axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))))
+           #caption = "Fear ratings are an average of rating obtained from Reel Scary and Common Sense Media",
+           caption=a("ggplot2 Package", href = "https://ggplot2.tidyverse.org/"))
   })
     
 }
