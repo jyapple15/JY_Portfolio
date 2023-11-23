@@ -8,6 +8,27 @@ library(htmltools)
 ```
 
 ```{r}
+library(rlist)
+list <- tagList()
+for(i in c(1,2,3,4,5,6)){
+  list <- list.append(list, div(
+    p(1),
+    p(9)
+  ))
+}
+list
+length(list)
+
+LIST <- tagList(div(p(1),p(2)),
+        div(p(1),p(2)),
+        div(p(1),p(2)),
+        div(p(1),p(2)),
+        div(p(1),p(2)),
+        div(p(1),p(2)))
+length(LIST)
+```
+
+```{r}
 # Importing Cleaned Datasets
 labelled_movies <- c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")
 #for(i in labelled_movies){assign(i,read_csv(sprintf("./src/data/cleaned/%s_cleaned.csv",i)))}
@@ -17,15 +38,19 @@ for(i in c("ms_data","screen_times")){
   assign(i,read_csv(sprintf("./src/data/cleaned/snipped_%s.csv",i)))
 }
 
-# Labelled ms_data (Only 6 diff movies)
-labelled_ms <- ms_data %>% 
-  dplyr::filter(!is.na(label)) %>%
+ms_data <- ms_data %>%
   pivot_longer(
     cols = matches("^\\d"),
     names_to = "cmpd",
     values_to = "conc"
   ) %>% 
   mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind])
+
+
+# Labelled ms_data (Only 6 diff movies)
+labelled_ms <- ms_data %>% 
+  dplyr::filter(!is.na(label))
+
 
 exp_labelled_ms <- labelled_ms %>% #To separate labels
   separate_longer_delim(
@@ -201,8 +226,6 @@ graph_3t <- labelled_ms %>%
   group_by(cmpd) %>% 
   mutate(sum = sum(conc)) %>% ungroup()
 
-labelled_ms %>% 
-  dplyr::filter(label) %>% distinct(label)
 
 # Vector of absent cmpd (Complete Absence)
 removed_cmpd <- dplyr::filter(distinct(graph_3t, cmpd, sum), sum == 0)$cmpd
@@ -405,6 +428,11 @@ Final_fear_cmpd_ranked <- fear_cmpd_ranked
 
 #Fear Type A: Identified w cmpd A
 user_cmpd_5 <- "235.1928" #SELECT from really narrowed few (TODO)
+
+
+graph_5_fixed <- ms_data %>%
+    group_by(cmpd,movie) %>%
+    mutate(overall_ave_conc_perpax = mean(conc_perpax)) %>% ungroup()
 
 graph_5a <- ms_data %>%
   dplyr::filter(cmpd == user_cmpd_5)

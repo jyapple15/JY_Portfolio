@@ -5,7 +5,6 @@ library(tidyverse)
 library(ggplot2)
 library(shinythemes)
 library(shinycssloaders)
-library(rlist)
 
 # Colour scheme (23 colours needed for palette)
 colour_palette <- c("#a9a9f9","#009699","maroon","red","orange","yellow","palegreen","green","lightblue","blue","purple","pink","green","lightblue","blue","purple","pink","pink","green","lightblue","blue","purple","pink")
@@ -14,6 +13,21 @@ colour_bkg <- c("#a9a9f9","#009699") #contrasting w each other and w palette
 
 # Spinner Options
 options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=2)
+
+# Glide Controls
+controls <- glideControls(
+  list(
+    prevButton(class = "btn btn-warning"),
+    firstButton(class = "btn btn-danger", "First screen !")
+  ),
+  list(
+    nextButton(),
+    lastButton(
+      class = "btn btn-success", 
+      HTML(paste("Last screen...", icon("ok", lib = "glyphicon")))
+    )
+  )
+)
 
 # Importing Cleaned Datasets
 labelled_movies <- c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")
@@ -56,150 +70,121 @@ ui <- fluidPage(
   shinythemes::themeSelector(),
   tags$link(rel = "stylesheet", href = "styles.css"), #In www folder
   titlePanel("Is the smell of fear real?"),
-  
-  glide(
-    id = "description",
-    controls_position = "bottom",
-    previous_label = "Huh?",
-    next_label = "What now?",
-    
-    #Screen 1
-    screen(
-      div(
-        p("This is the 1st chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
-      ),
-      sidebarLayout(
-        mainPanel(
+  sidebarLayout(
+    mainPanel(
+      glide(
+        custom_controls = controls,
+        controls_position = "bottom",
+        previous_label = "Huh?",
+        next_label = "What now?",
+        
+        #Screen 1
+        screen(
+          div(
+            p("This is the 1st chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+          ),
           withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
             ui_element = plotOutput("graph_1"),
             image = "loading_ghost.gif",
             image.width = "400px"
           )
         ),
-        sidebarPanel(
-          sliderInput(inputId = "graph_1_rank",
-                      label = "Expected Fear Rank",
-                      value = c(1,25),
-                      min = 1,
-                      max = length(distinct(ms_data,cmpd)$cmpd),
-                      step = 1,
-                      ticks = FALSE),
-        )
-      )
-    ),
-    
-    #Screen 2
-    screen(
-      div(
-        p("This is the 2nd chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
-      ),
-      sidebarLayout(
-        mainPanel(
+        
+        #Screen 2
+        screen(
+          div(
+            p("This is the 2nd chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+          ),
           withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
             ui_element = plotOutput("graph_2"),
             image = "loading_ghost.gif",
             image.width = "400px"
           )
         ),
-        sidebarPanel(
-          uiOutput("select_screen_2"),
-          
-          checkboxInput(inputId = "graph_2_checkbox",
-                        label = "Exclude zeros",
-                        value = FALSE),
-        )
-      )
-    ),
-    
-    #Screen 3
-    screen(
-      div(
-        p("This is the 3rd chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
-      ),
-      sidebarLayout(
-        mainPanel(
+        
+        #Screen 3
+        screen(
+          div(
+            p("This is the 3rd chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+          ),
           withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
-            ui_element = uiOutput("graph_3"),
+            ui_element = plotOutput("graph_3"),
             image = "loading_ghost.gif",
             image.width = "400px"
           )
         ),
-        sidebarPanel(
-          radioButtons(
-            inputId = "graph_3_movie",
-            label = "Select a movie:",
-            choices = distinct(labelled_ms,movie)$movie
+        
+        #Screen 4
+        screen(
+          div(
+            p("This is the 4th chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
           ),
-          sliderInput(inputId = "graph_3_rank",
-                      label = "Expected Fear Rank",
-                      value = c(1,25),
-                      min = 1,
-                      max = length(distinct(ms_data,cmpd)$cmpd),
-                      step = 1,
-                      ticks = FALSE)
-        )
-      )
-    ),
-    
-    #Screen 4
-    screen(
-      div(
-        p("This is the 4th chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
-      ),
-      sidebarLayout(
-        mainPanel(
           withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
             ui_element = plotOutput("graph_4"),
             image = "loading_ghost.gif",
             image.width = "400px"
           ),
-          uiOutput("checkbox_screen_4") #TODO
+          uiOutput("checkbox_screen_4")
         ),
-        sidebarPanel(
-          radioButtons(
-            inputId = "graph_4_movie",
-            label = "Select a movie:",
-            choices = distinct(labelled_ms,movie)$movie
+        
+        #Screen 5
+        screen(
+          div(
+            p("This is the 5th chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
           ),
-          uiOutput("select_screen_4")
+          withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
+            ui_element = plotOutput("graph_5"),
+            image = "loading_ghost.gif",
+            image.width = "400px"
+          )
         )
       )
     ),
     
-    #Screen 5
-    screen(
-      div(
-        p("This is the 5th chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+    sidebarPanel(
+      sliderInput(inputId = "graph_1_rank",
+                  label = "Expected Fear Rank",
+                  value = c(1,25),
+                  min = 1,
+                  max = length(distinct(ms_data,cmpd)$cmpd),
+                  step = 1,
+                  ticks = FALSE),
+      
+      uiOutput("select_screen_2"),
+      
+      checkboxInput(inputId = "graph_2_checkbox",
+                    label = "Exclude zeros",
+                    value = FALSE),
+      
+      radioButtons(
+        inputId = "graph_3_movie",
+        label = "Select a movie:",
+        choices = distinct(labelled_ms,movie)$movie
       ),
-      sidebarLayout(
-        mainPanel(
-          withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
-            ui_element = plotOutput("graph_5a"),
-            image = "loading_ghost.gif",
-            image.width = "400px"
-          ),
-          withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
-            ui_element = plotOutput("graph_5b"),
-            image = "loading_ghost.gif",
-            image.width = "400px"
-          )
-        ),
-        sidebarPanel(
-          uiOutput("select_screen_5"),
-          
-          checkboxInput(inputId = "graph_5_checkbox",
-                        label = "Exclude zeros",
-                        value = FALSE),
-        )
-      )
+      
+      sliderInput(inputId = "graph_3_rank",
+                  label = "Expected Fear Rank",
+                  value = c(1,25),
+                  min = 1,
+                  max = length(distinct(ms_data,cmpd)$cmpd),
+                  step = 1,
+                  ticks = FALSE),
+      
+      radioButtons(
+        inputId = "graph_4_movie",
+        label = "Select a movie:",
+        choices = distinct(labelled_ms,movie)$movie
+      ),
+      
+      uiOutput("select_screen_4"),
+      
+      selectInput(inputId = "whats_fear", 
+                  label = "\"Fear\" labels", 
+                  choices = distinct(exp_labelled_ms,label)$label, 
+                  multiple = TRUE, 
+                  selected = fear_labels,),
+      
     )
-  ),
-  wellPanel(
-    selectInput(inputId = "whats_fear", 
-                label = "\"Fear\" labels", 
-                choices = distinct(exp_labelled_ms,label)$label, 
-                multiple = TRUE, 
-                selected = fear_labels,),
   )
 )
 
@@ -233,13 +218,6 @@ server <- function(input, output){
   # Interactive UI (Screen 4)
   output$select_screen_4 <- renderUI({
     selectInput(inputId = "graph_4_cmpd",
-                label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked())
-  })
-  
-  # Interactive UI (Screen 5)
-  output$select_screen_5 <- renderUI({
-    selectInput(inputId = "graph_5_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
                 choices = fear_cmpd_ranked())
   })
@@ -380,10 +358,9 @@ server <- function(input, output){
   user_cmpd_4 <- reactive(input$graph_4_cmpd)
   
   # Interactive UI (Screen 4) TODO Select all: https://stackoverflow.com/questions/28829682/r-shiny-checkboxgroupinput-select-all-checkboxes-by-click
-  # NOTE: Mistake -> needa filter user_movie_4() --> BUT, when did that, error --> should try reactive({}) or filter through screen_times next
   user_movie_4_indices <- reactive(labelled_ms %>% 
-      dplyr::filter(movie == user_movie_4()) %>%
-      distinct(movie_F_ind) %>% '[['("movie_F_ind"))
+                                     dplyr::filter(movie == user_movie_4()) %>%
+                                     distinct(movie_F_ind) %>% '[['("movie_F_ind"))
   
   ui_4_screens <- reactive({
     list <- tagList()
@@ -403,8 +380,7 @@ server <- function(input, output){
                        label = "Select desired screenings:",
                        selected = user_movie_4_indices(),
                        choiceNames = ui_4_screens(),
-                       choiceValues = user_movie_4_indices(),
-                       inline = TRUE)  
+                       choiceValues = user_movie_4_indices())  
   })
   
   graph_4 <- reactive(tidied_labelled_ms() %>% arrange(is.fear) %>%
@@ -451,48 +427,6 @@ server <- function(input, output){
   #graph_4 %>% distinct(movie_F_ind) %>% arrange(movie_F_ind) # %>% ...
   # No. of people, Time of day, Date (Maybe got spoilers so less scared haha)
   
-  # Screen 5
-  user_cmpd_5 <- reactive(input$graph_5_cmpd) #SELECT from really narrowed few (TODO)
-  
-  graph_5_fixed <- ms_data %>%
-    group_by(cmpd,movie) %>%
-    mutate(overall_ave_conc_perpax = mean(conc_perpax)) %>% ungroup()
-  
-  graph_5 <- reactive(
-    graph_5_fixed %>%
-      dplyr::filter(cmpd == user_cmpd_5())
-    )
-  
-  graph_5a <- reactive(graph_5())
-  
-  output$graph_5a <- renderPlot({
-    if(input$graph_5_checkbox){
-      graph_5a <- reactive(graph_5() %>%
-        dplyr::filter(conc_perpax>0))
-    }
-    
-    graph_5a() %>% 
-      ggplot(aes(x = conc_perpax, y = movie)) +
-      geom_boxplot() +
-      labs(x = "Concentration per Pax per Scene", 
-           y = "Movie",
-           title = paste("Distribution of compound with m/z =", user_cmpd_5()))
-  })
-  
-  output$graph_5b <- renderPlot({
-    graph_5()  %>%
-      distinct(movie, overall_ave_conc_perpax, .keep_all = TRUE) %>% 
-      mutate(fear_rating = screen_times$fear_rating[movie_F_ind]) %>%
-      ggplot(aes(x = fear_rating, y = overall_ave_conc_perpax)) +
-      geom_point() + geom_line() + 
-      labs(x = "Online Fear Ratings",
-           y = "Average Concentration per Pax per Scene",
-           title = "Comparison of Actual and Expected Fear Ratings", 
-           subtitle = paste("Based on compound with m/z =",user_cmpd_5()), 
-           #caption = "Fear ratings are an average of rating obtained from Reel Scary and Common Sense Media",
-           caption=a("ggplot2 Package", href = "https://ggplot2.tidyverse.org/"))
-  })
-    
 }
 
 shinyApp(ui = ui, server = server)
