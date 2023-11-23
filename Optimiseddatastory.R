@@ -1,12 +1,3 @@
----
-title: "Is the smell of fear real?"
-filters: 
-  - shinylive
----
-
-```{shinylive-r}
-#| standalone: true
-
 library(shiny)
 library(shinyglide)
 library(tidyverse)
@@ -23,41 +14,14 @@ colour_bkg <- c("#a9a9f9","#009699") #contrasting w each other and w palette
 # Spinner Options
 options(spinner.color="#0275D8", spinner.color.background="#ffffff", spinner.size=2)
 
-# Importing Cleaned Datasets
-labelled_movies <- c("Buddy","Hobbit","Machete","Mitty","Paranormal","Hunger")
-
 # Importing Snipped Datasets
-for(i in c("ms_data","screen_times")){
+for(i in c("ms_data","screen_times","label_set")){
   assign(i,read_csv(sprintf("./src/data/cleaned/snipped_%s.csv",i)))
 }
 
-ms_data <- ms_data %>%
-  pivot_longer(
-    cols = matches("^\\d"),
-    names_to = "cmpd",
-    values_to = "conc"
-  ) %>% 
-  mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind])
-
-
-# Labelled ms_data (Only 6 diff movies)
-labelled_ms <- ms_data %>% 
-  dplyr::filter(!is.na(label))
-  
-
-exp_labelled_ms <- labelled_ms %>% #To separate labels
-  separate_longer_delim(
-    cols = label,
-    delim = "; "
-  )
-
 fear_labels <- grep("death|suspense|horror|murder|aggressive|violence|shock", 
-                    distinct(exp_labelled_ms,label)$label, 
+                    label_set$label, 
                     value=TRUE)
-
-# Unlabelled ms_data (Excluding the buffer time before labelled movies start)
-unlabelled_ms <- ms_data %>% 
-  dplyr::filter(is.na(label))
 
 # Any pics etc. need to be in www folder
 ui <- fluidPage(
@@ -89,7 +53,7 @@ ui <- fluidPage(
                       label = "Expected Fear Rank",
                       value = c(1,25),
                       min = 1,
-                      max = length(distinct(ms_data,cmpd)$cmpd),
+                      max = length(select(ms_data, matches("^\\d"))),
                       step = 1,
                       ticks = FALSE),
         )
@@ -136,13 +100,13 @@ ui <- fluidPage(
           radioButtons(
             inputId = "graph_3_movie",
             label = "Select a movie:",
-            choices = distinct(labelled_ms,movie)$movie
+            choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie
           ),
           sliderInput(inputId = "graph_3_rank",
                       label = "Expected Fear Rank",
                       value = c(1,25),
                       min = 1,
-                      max = length(distinct(ms_data,cmpd)$cmpd),
+                      max = length(select(ms_data, matches("^\\d"))),
                       step = 1,
                       ticks = FALSE)
         )
@@ -167,7 +131,7 @@ ui <- fluidPage(
           radioButtons(
             inputId = "graph_4_movie",
             label = "Select a movie:",
-            choices = distinct(labelled_ms,movie)$movie
+            choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie
           ),
           uiOutput("select_screen_4")
         )
@@ -205,7 +169,7 @@ ui <- fluidPage(
   wellPanel(
     selectInput(inputId = "whats_fear", 
                 label = "\"Fear\" labels", 
-                choices = distinct(exp_labelled_ms,label)$label, 
+                choices = label_set$label, 
                 multiple = TRUE, 
                 selected = fear_labels,),
   )
@@ -216,44 +180,45 @@ ui <- fluidPage(
 server <- function(input, output){
   #https://mastering-shiny.org/action-graphics.html
   
-  tidied_labelled_ms <- reactive(exp_labelled_ms %>%
-                                   mutate(is.fear = if_else(grepl(paste(fear_labels, collapse="|"),label), "Fear","Others")))
+  fear_labels <- reactive(input$whats_fear)
 
   #Screen 1
-  graph_1 <- reactive(tidied_labelled_ms() %>% 
-    group_by(cmpd) %>%
-    mutate(Tconc = sum(conc)) %>%
-    group_by(cmpd,is.fear) %>%
-    mutate(fraction = sum(conc)/Tconc) %>%
-    distinct(cmpd,is.fear,fraction) %>%
-    arrange(is.fear, desc(fraction)))
-  
-  # For use in interactive UI and others
-  fear_cmpd_ranked <- reactive(graph_1()$cmpd[1:(length(graph_1()$cmpd)/2)])
+  fear_cmpd_ranked <- reactive(
+    ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      mutate(is.fear = if_else(grepl(paste(fear_labels(), collapse="|"),label),"Fear","Others")) %>%
+      group_by(is.fear)%>%
+      reframe(across(matches("^\\d"), sum)) %>%
+      reframe(across(matches("^\\d"),function(x){x/sum(x)})) %>%
+      mutate(is.fear=c("Fear","Others")[row_number(`14.0028`)]) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "fraction"
+      ) %>% 
+      dplyr::filter(is.fear == "Fear") %>%
+      arrange(desc(fraction)))
   
   # Interactive UI (Screen 2)
   output$select_screen_2 <- renderUI({
     selectInput(inputId = "graph_2_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked())
+                choices = fear_cmpd_ranked()$cmpd)
   })
   
   # Interactive UI (Screen 4)
   output$select_screen_4 <- renderUI({
     selectInput(inputId = "graph_4_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked())
+                choices = fear_cmpd_ranked()$cmpd)
   })
   
   # Interactive UI (Screen 5)
   output$select_screen_5 <- renderUI({
     selectInput(inputId = "graph_5_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked())
+                choices = fear_cmpd_ranked()$cmpd)
   })
-  
-  #For later stuff
-  fear_cmpd_ranked <- reactive(graph_1()$cmpd[1:(length(graph_1()$cmpd)/2)])
   
   #For user input in shiny 
   user_start_rank_1 <- reactive(input$graph_1_rank[1])
@@ -262,17 +227,14 @@ server <- function(input, output){
   select_to_plot_1 <- reactive(graph_1()[c(user_start_rank_1():user_end_rank_1(), (length(graph_1()$cmpd)-user_start_rank_1()+1):(length(graph_1()$cmpd)-user_end_rank_1()+1)),])
   
   output$graph_1 <- renderPlot({
-    select_to_plot_1() %>%
-      group_by(is.fear) %>%
-      mutate(cmpd = fct_reorder(as.character(cmpd), fraction)) %>%
-      ggplot(aes(y = cmpd, x = fraction, fill = fct_reorder(is.fear, -fraction))) +
-      geom_col() + 
+    fear_cmpd_ranked() %>%
+      slice(user_start_rank_1():user_end_rank_1()) %>%
+      ggplot(aes(y = fct_reorder(cmpd,fraction), x = fraction)) +
+      geom_col(fill = colour_palette[1]) + 
       labs(title = paste("Top",user_start_rank_1(),"to",user_end_rank_1(),"Most Frequently Emitted Compounds when in Fear"),
            subtitle = "Identified by distribution across different types of scenes",
            y = "m/z of Compound", 
-           x = "Fraction of the Total Concentration", 
-           fill = "Type of Scene") + 
-      scale_fill_manual(values=colour_palette) +
+           x = "Fraction of the Total Concentration") + 
       theme(panel.background = element_blank(),
             axis.ticks.y = element_blank(),
             axis.title.y = element_text(margin = margin(r = 10)),
@@ -287,15 +249,22 @@ server <- function(input, output){
   user_cmpd_2 <- reactive(input$graph_2_cmpd)
   zeros <- reactive(input$graph_2_checkbox) #FALSE means do not exclude zeros
   
-  graph_2 <- reactive(tidied_labelled_ms() %>% 
-                        dplyr::filter(cmpd == user_cmpd_2()))
-  graph_2t <- reactive(graph_2())
-  
   output$graph_2 <- renderPlot({
-    if(zeros() == TRUE){
-      graph_2t <- reactive(graph_2() %>% dplyr::filter(conc > 0))
-    } 
-    graph_2t() %>% 
+    ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      select(user_cmpd_2(),movie_F_ind, label) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>% 
+      { if(zeros()) dplyr::filter(.,conc>0) else(.)} %>%
+      mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>%
+      select(-conc, -movie_F_ind, -cmpd) %>%
+      separate_longer_delim(
+        cols = label,
+        delim = "; "
+      ) %>% 
       ggplot(aes(x=conc_perpax, y=label)) + 
       geom_hex() +
       labs(title = paste("Distribution of compound with m/z =",user_cmpd_2(),"across different scenes"),
@@ -313,31 +282,35 @@ server <- function(input, output){
   user_count_cmpd_3 <- reactive(user_bottom_cmpd_3() - user_top_cmpd_3() + 1)
   
   #Vector of selected compounds
-  selected_cmpd_3 <- reactive(fear_cmpd_ranked()[user_top_cmpd_3():user_bottom_cmpd_3()])
-  
-  graph_3t <- reactive(labelled_ms %>% 
-                         dplyr::filter(movie == user_movie_3()) %>%
-                         mutate(is.fear = if_else(grepl(paste(fear_labels, collapse="|"),label), "Fear","Others")) %>%
-                         dplyr::filter(cmpd %in% selected_cmpd_3()) %>% #Select top cmpd
-                         group_by(counter,cmpd) %>% #To add an ave conc common to similar movies
-                         mutate(average = mean(conc_perpax)) %>% 
-                         group_by(cmpd) %>% 
-                         mutate(sum = sum(conc)) %>% ungroup())
+  selected_cmpd_3 <- reactive(fear_cmpd_ranked()$cmpd[user_top_cmpd_3():user_bottom_cmpd_3()])
 
   # Vector of absent cmpd (Complete Absence)
-  removed_cmpd <- reactive(dplyr::filter(distinct(graph_3t(), cmpd, sum), sum == 0)$cmpd)
-
-  graph_3 <- reactive(graph_3t() %>% 
-                        dplyr::filter(sum != 0) %>% 
-                        distinct(counter,cmpd, .keep_all = TRUE) %>% #To remove movie duplicates
-                        transform(cmpd=factor(cmpd, levels=selected_cmpd_3())) %>%
-                        arrange(cmpd, desc(is.fear)))
+  removed_cmpd <- reactive(
+    ms_data %>% 
+      dplyr::filter(movie == user_movie_3()) %>%
+      select(all_of(selected_cmpd_3())) %>%
+      select_if(~all(.==0)) %>%
+      colnames()
+  )
   
   # Plot
   output$graph_3_no <- renderText({"All compounds selected were absent throughout the movie selected."})
   
   output$graph_3_yes <- renderPlot({
-    graph_3() %>% #NOTE: IF PLOT CONC, A FEW COMPLETE ABSENCE
+    ms_data %>% 
+      dplyr::filter(!is.na(label),
+                    movie == user_movie_3()) %>%
+      select(all_of(selected_cmpd_3()[!selected_cmpd_3() %in% removed_cmpd()]),counter,label) %>%
+      group_by(counter,label) %>%
+      reframe(across(matches("^\\d"), mean)) %>%
+      mutate(is.fear = if_else(grepl(paste(fear_labels(), collapse="|"),label), "Fear","Others")) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "average"
+      )  %>% #To remove movie duplicates
+      transform(cmpd=factor(cmpd, levels=selected_cmpd_3())) %>%
+      arrange(cmpd, desc(is.fear)) %>% #NOTE: IF PLOT CONC, A FEW COMPLETE ABSENCE
       ggplot(aes(x=counter/2, y=average, colour=fct_inorder(is.fear))) + 
       geom_point(alpha=0.5)+ 
       facet_wrap(~ cmpd, 
@@ -374,7 +347,7 @@ server <- function(input, output){
   })
   
   output$graph_3 <- renderUI({
-    switch(if_else(length(graph_3()$cmpd) != 0, 1, 2),
+    switch(if_else(length(removed_cmpd()) != length(selected_cmpd_3()), 1, 2),
            withSpinner(
              ui_element = plotOutput("graph_3_yes"),
              image = "loading_ghost.gif",
@@ -389,7 +362,7 @@ server <- function(input, output){
   
   # Interactive UI (Screen 4) TODO Select all: https://stackoverflow.com/questions/28829682/r-shiny-checkboxgroupinput-select-all-checkboxes-by-click
   # NOTE: Mistake -> needa filter user_movie_4() --> BUT, when did that, error --> should try reactive({}) or filter through screen_times next
-  user_movie_4_indices <- reactive(labelled_ms %>% 
+  user_movie_4_indices <- reactive(ms_data %>% 
       dplyr::filter(movie == user_movie_4()) %>%
       distinct(movie_F_ind) %>% '[['("movie_F_ind"))
   
@@ -407,7 +380,7 @@ server <- function(input, output){
   })
   
   output$checkbox_screen_4 <- renderUI({ 
-    checkboxGroupInput(inputId = "graph_4_details",
+    checkboxGroupInput(inputId = "graph_4_screenings",
                        label = "Select desired screenings:",
                        selected = user_movie_4_indices(),
                        choiceNames = ui_4_screens(),
@@ -415,26 +388,62 @@ server <- function(input, output){
                        inline = TRUE)  
   })
   
-  graph_4 <- reactive(tidied_labelled_ms() %>% arrange(is.fear) %>%
-                        distinct(Time, cmpd, .keep_all = TRUE) %>% #To remove expanded labels
-                        arrange(counter, cmpd) %>% 
-                        dplyr::filter(cmpd == user_cmpd_4()) %>% #Select top cmpd
-                        dplyr::filter(movie == user_movie_4()) %>% #Select 1 movie
-                        mutate(movie_F_ind = fct_reorder2(as.character(movie_F_ind), counter, conc_perpax)) %>% 
-                        arrange(movie_F_ind) %>% 
-                        dplyr::filter(movie_F_ind %in% input$graph_4_details)) #JY: To filter screenings (All else run well)
+  selected_screenings <- reactive(input$graph_4_screenings)
   
-  Others_4 <- reactive(graph_4() %>% mutate(conc_perpax=(max(conc_perpax)+min(conc_perpax))/2) %>% dplyr::filter(is.fear == "Others", movie_F_ind==graph_4()$movie_F_ind[1]))
-  Fear_4 <- reactive(graph_4() %>% mutate(conc_perpax=(max(conc_perpax)+min(conc_perpax))/2) %>% dplyr::filter(is.fear == "Fear", movie_F_ind==graph_4()$movie_F_ind[1]))
+  graph_4_info <- reactive(
+    ms_data %>% 
+      dplyr::filter(!is.na(label),
+                    movie == user_movie_4(),
+                    movie_F_ind %in% selected_screenings()) %>%
+      select(user_cmpd_4(),counter,label,movie_F_ind) %>%
+      group_by(movie_F_ind) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>%
+      ungroup() %>%
+      mutate(conc_perpax = (max(conc/screen_times$number.visitors[movie_F_ind])-min(conc/screen_times$number.visitors[movie_F_ind]))) %>%
+      distinct(counter,.keep_all = TRUE) %>%
+      mutate(is.fear = if_else(grepl(paste(fear_labels(), collapse="|"),label),"Fear","Others")) %>%
+      select(counter, is.fear,conc_perpax)
+  )
+  
+  graph_4_height_info <- reactive(
+    ms_data %>%
+      dplyr::filter(!is.na(label),
+                  movie == user_movie_4(),
+                  movie_F_ind %in% selected_screenings()) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>%
+      ungroup() %>%
+      mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>% 
+      '[['(user_cmpd_4())
+  )
   
   output$graph_4 <- renderPlot({
-    graph_4() %>%
+    ms_data %>% 
+      dplyr::filter(!is.na(label),
+                    movie == user_movie_4(),
+                    movie_F_ind %in% selected_screenings()) %>%
+      select(user_cmpd_4(),counter,label,movie_F_ind) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>%
+      mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>%
+      mutate(movie_F_ind = fct_reorder2(as.character(movie_F_ind), counter, conc_perpax)) %>%
+      arrange(movie_F_ind) %>%
       ggplot(aes(x=counter/2, y=conc_perpax)) + 
-      geom_tile(data = Fear_4(),
-                height=max(graph_4()$conc_perpax)-min(graph_4()$conc_perpax),
+      geom_tile(data = graph_4_info() %>% dplyr::filter(is.fear == "Fear"),
+                height=max(graph_4_height_info())-min(graph_4_height_info()),
                 aes(fill="Fear"),linetype=0,alpha=0.3) +
-      geom_tile(data = Others_4(), 
-                height=max(graph_4()$conc_perpax)-min(graph_4()$conc_perpax), 
+      geom_tile(data = graph_4_info() %>% dplyr::filter(is.fear == "Others"), 
+                height=max(graph_4_height_info())-min(graph_4_height_info()), 
                 aes(fill="Others"),linetype=0,alpha=0.1) +
       geom_line(aes(group = movie_F_ind, color = movie_F_ind)) +
       labs(title = paste("Distribution of compound with m/z =", 
@@ -462,24 +471,16 @@ server <- function(input, output){
   # Screen 5
   user_cmpd_5 <- reactive(input$graph_5_cmpd) #SELECT from really narrowed few (TODO)
   
-  graph_5_fixed <- ms_data %>%
-    group_by(cmpd,movie) %>%
-    mutate(overall_ave_conc_perpax = mean(conc_perpax)) %>% ungroup()
-  
-  graph_5 <- reactive(
-    graph_5_fixed %>%
-      dplyr::filter(cmpd == user_cmpd_5())
-    )
-  
-  graph_5a <- reactive(graph_5())
-  
   output$graph_5a <- renderPlot({
-    if(input$graph_5_checkbox){
-      graph_5a <- reactive(graph_5() %>%
-        dplyr::filter(conc_perpax>0))
-    }
-    
-    graph_5a() %>% 
+    ms_data %>%
+      select(user_cmpd_5(),counter,label,movie,movie_F_ind) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>%
+      {if(input$graph_5_checkbox) dplyr::filter(., conc>0) else(.)} %>%
+      mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>% 
       ggplot(aes(x = conc_perpax, y = movie)) +
       geom_boxplot() +
       labs(x = "Concentration per Pax per Scene", 
@@ -488,7 +489,19 @@ server <- function(input, output){
   })
   
   output$graph_5b <- renderPlot({
-    graph_5()  %>%
+    ms_data %>%
+      select(user_cmpd_5(),counter,label,movie,movie_F_ind) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>%
+      group_by(movie) %>%
+      mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind],
+             overall_ave_conc_perpax = mean(conc_perpax)) %>%
+      ungroup() %>%
+      distinct(movie, .keep_all = TRUE) %>%
+      mutate(fear_rating = screen_times$fear_rating[movie_F_ind]) %>%
       distinct(movie, overall_ave_conc_perpax, .keep_all = TRUE) %>% 
       mutate(fear_rating = screen_times$fear_rating[movie_F_ind]) %>%
       ggplot(aes(x = fear_rating, y = overall_ave_conc_perpax)) +
@@ -504,7 +517,3 @@ server <- function(input, output){
 }
 
 shinyApp(ui = ui, server = server)
-```
-<p>Placeholder for Write-up</p>
-<iframe height="150%" width="100%" frameborder="no" src="https://andrea-jy.shinyapps.io/datastory_rough/"></iframe>
-Placeholder for Visualisations^

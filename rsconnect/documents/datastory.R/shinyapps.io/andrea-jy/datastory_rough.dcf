@@ -1,0 +1,13 @@
+name: datastory_rough
+title: datastory_rough
+username: andrea-jy
+account: andrea-jy
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10607533
+bundleId: 7959576
+url: https://andrea-jy.shinyapps.io/datastory_rough/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|.RDataTmp|_extensions/quarto-ext/shinylive/_extension.yml|_extensions/quarto-ext/shinylive/README.md|_extensions/quarto-ext/shinylive/resources/css/shinylive-quarto.css|_extensions/quarto-ext/shinylive/shinylive.lua|_quarto.yml|data_cleaning.Rmd|datastory.qmd|index.qmd|linked-plot.svg|nm2207.qmd|OLDdatastory.R|OldTEMP.Rmd|Possibledatastory.R|README.md|Temp.Rmd|_site|docs

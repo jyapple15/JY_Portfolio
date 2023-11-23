@@ -217,6 +217,13 @@ valid_ms <- valid_ms %>%
   )
 
 write.csv(valid_ms, "./src/data/cleaned/snipped_ms_data.csv", row.names=FALSE)
+
+label_set <- valid_ms %>% separate_longer_delim(
+    cols = label,
+    delim = "; "
+  ) %>% dplyr::filter(!is.na(label)) %>% distinct(label)
+
+write.csv(label_set, "./src/data/cleaned/snipped_label_set.csv", row.names=FALSE)
 ```
 
 ```{r}

@@ -1,6 +1,5 @@
 library(shiny)
 library(shinyglide)
-library(slickR)
 library(tidyverse)
 library(ggplot2)
 library(shinythemes)
@@ -194,7 +193,7 @@ ui <- fluidPage(
       )
     )
   ),
-  wellPanel(
+  wellPanel( #TODO
     selectInput(inputId = "whats_fear", 
                 label = "\"Fear\" labels", 
                 choices = distinct(exp_labelled_ms,label)$label, 
