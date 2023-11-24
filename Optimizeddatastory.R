@@ -86,8 +86,10 @@ ui <- fluidPage(
       ),
       div(
         br(),
-        p("This plot shows that some compounds may be more present during fear-inducing scenes. 
-          However, this plot is also skewed as some compounds are relatively absent. 
+        p("Here, we can see that some compounds are more present during fear-inducing 
+          scenes than other scenes. So, the smell of fear does exist? Well, there's a catch."), 
+          
+        p("Unfortunately, this plot is skewed as some compounds are relatively absent in our data set. 
           This means that the fraction is calculated from few data points and may 
           not be an accurate representation of the compound’s distribution across 
           scenes. In addition, scenes labelled with both “fear” and “non-fear labels” 
@@ -172,8 +174,9 @@ ui <- fluidPage(
       ),
       div(
         br(),
-        p("From the plots, we can see that there is not clear trend for most compounds.  
-            However, most plots have gas compound concentrations staying relatively constant over 
+        p("From the plots, we can see that there is no outstanding trend between the fear-labelled 
+            scenes and the concentration of most compounds. However, when comparing the overall compound concentration 
+            over time, most plots reveal relatively constant gas compound concentrations over 
             time. This could be due to those gas molecules being present in the regular atmosphere 
             instead of a contribution from us. It could also be due to our gas emissions that are 
             unaffected by the movie scenes being played."), 
