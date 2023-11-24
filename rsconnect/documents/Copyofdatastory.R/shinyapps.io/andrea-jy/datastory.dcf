@@ -1,0 +1,13 @@
+name: datastory
+title: datastory
+username: andrea-jy
+account: andrea-jy
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 10618135
+bundleId: 7965008
+url: https://andrea-jy.shinyapps.io/datastory/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|.RDataTmp|_extensions/quarto-ext/shinylive/_extension.yml|_extensions/quarto-ext/shinylive/README.md|_extensions/quarto-ext/shinylive/resources/css/shinylive-quarto.css|_extensions/quarto-ext/shinylive/shinylive.lua|_quarto.yml|BackUpDatastory.R|data_cleaning.Rmd|datastory.qmd|datastory.R|EDITBEF9.R|index.qmd|nm2207.qmd|OLDdatastory.R|OldTEMP.Rmd|Optimizeddatastory.R|Possibledatastory.R|README.md|Temp.Rmd
