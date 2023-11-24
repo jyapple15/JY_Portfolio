@@ -30,11 +30,42 @@ ui <- fluidPage(
     previous_label = "Huh?",
     next_label = "What now?",
     
+    #Screen 0
+    screen(
+      div(
+        p("“The smell of fear” – a common phrase used to imply that one’s fear can be detected."),
+        br(),
+        p("Some think of it as a metaphor of sorts. Meanwhile, some say that other living things
+          such as bears and dogs can smell your fear. Have you ever wondered if this is true? Does
+          the “smell of fear” actually exist? Well, let’s break it down."),
+        tags$table(
+          tags$tbody(
+            tags$td(
+              p("A smell of fear can possibly come about from chemicals excreted by our bodies. These are
+                then detected by the olfactory receptors such as those in our noses, leading to what we 
+                perceive as “smell”. Thus, a smell of fear would be detectable by analysing the gas around
+                a person in fear. Using this concept, a group of researchers sampled the gas emitted in the
+                Cinestar Cinema in Mainz, Germany over 1.5 months every 30s (Wicker et al., 2015). These 
+                samples were then input into a mass spectrometer (PTR-MS-ToF) to obtain the", actionLink(inputId = "mz_def", label="mass to charge 
+                ratio (m/z)"), "of compounds in the gas. Now, let's look for trends by comparing the concentrations of those compounds with 
+                the pre-labelled scenes!")),
+              tags$td(
+                tags$image(src = "https://d1ymz67w5raq8g.cloudfront.net/Pictures/480xAny/3/8/6/114386_0117EiC_EducationinChemistry_January2017-28.jpg", height="190px")
+              )
+          )
+        ),
+        p("*Masses such as 18.9921 and 18.9995 are considered as non-identical. Mass of compounds are not 
+          unique for chemicals with the same composition.")
+      )
+    ),
+    
     #Screen 1
     screen(
       div(
-        p("This is the 1st chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
-      ),
+        p("Firstly, we need to decide what we count as a fear-inducing scene. When we define those as the scenes involving those at the bottom, 
+          we see that the top ranked “fear compounds” are as follows. Try modifying the fear-inducing scenes at the bottom of this screen!"),
+        br()
+        ),
       sidebarLayout(
         mainPanel(
           withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
@@ -50,38 +81,70 @@ ui <- fluidPage(
                       min = 1,
                       max = length(select(ms_data, matches("^\\d"))),
                       step = 1,
-                      ticks = FALSE),
+                      ticks = FALSE)
         )
+      ),
+      div(
+        br(),
+        p("This plot shows that some compounds may be more present during fear-inducing scenes. 
+          However, this plot is also skewed as some compounds are relatively absent. 
+          This means that the fraction is calculated from few data points and may 
+          not be an accurate representation of the compound’s distribution across 
+          scenes. In addition, scenes labelled with both “fear” and “non-fear labels” 
+          are overall considered as “fear scenes”. This might lead to an overrepresentation of “fear scenes”.")
       )
     ),
     
     #Screen 2
     screen(
       div(
-        p("This is the 2nd chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+        p("Nonetheless, we now have a better idea of what the ranking should look like. 
+          Considering that the top data might be skewed, the compounds a little lower in 
+          rank are likely to give a better idea of the true ranking."),
+        p("Here, we can see the distribution of a compound over different scene labels. 
+          A high number of points can be seen concentrated at the lower concentrations, 
+          suggesting lots of data points where compounds have concentrations at noise level. 
+          In addition, most compounds can be seen having low concentrations at a large number 
+          of conversation scenes. This could be due to movies having a large number of 
+          conversation scenes, resulting in an underrepresentation of other scenes."),
+        br()
       ),
       sidebarLayout(
         mainPanel(
-          withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
-            ui_element = plotOutput("graph_2"),
-            image = "loading_ghost.gif",
-            image.width = "400px"
-          )
+          tabsetPanel(type = "tabs",
+                      tabPanel("Main", 
+                               withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
+                                 ui_element = plotOutput("graph_2a"),
+                                 image = "loading_ghost.gif",
+                                 image.width = "400px"
+                               )),
+                      tabPanel("Distributions of scenes", 
+                               withSpinner( #https://www.rdocumentation.org/packages/shinycssloaders/versions/1.0.0/topics/withSpinner
+                                 ui_element = plotOutput("graph_2b"),
+                                 image = "loading_ghost.gif",
+                                 image.width = "400px"
+                               )))
         ),
         sidebarPanel(
           uiOutput("select_screen_2"),
           
-          checkboxInput(inputId = "graph_2_checkbox",
-                        label = "Exclude zeros",
+          checkboxInput(inputId = "graph_2_noise",
+                        label = "Remove possible noise",
                         value = FALSE),
+          
+          checkboxInput(inputId = "graph_2_conversation",
+                        label = tags$section("Remove labels: ", tags$ul(tags$li("conversation general"), tags$li("conversation: conversation main actor"))),
+                        value = FALSE)
         )
-      )
+      ),
+      div(br(),
+          p("Upon removing those, many compounds are noted to have their concentrations split in aggregated columns. This suggests that another variable is affecting gas emissions per person. This could be the  factors such as the time of screening and number of people in the vicinity."))
     ),
     
     #Screen 3
     screen(
       div(
-        p("This is the 3rd chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+        p("Let’s try to keep one other variable constant – the movie."),
       ),
       sidebarLayout(
         mainPanel(
@@ -95,16 +158,43 @@ ui <- fluidPage(
           radioButtons(
             inputId = "graph_3_movie",
             label = "Select a movie:",
-            choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie
+            choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie,
+            selected = "Paranormal Activity: The Marked Ones"
           ),
           sliderInput(inputId = "graph_3_rank",
                       label = "Expected Fear Rank",
-                      value = c(1,25),
+                      value = c(1,10),
                       min = 1,
                       max = length(select(ms_data, matches("^\\d"))),
                       step = 1,
                       ticks = FALSE)
         )
+      ),
+      div(
+        p("From the plots, we can see that there is not clear trend for most compounds.  
+            However, most plots have gas compound concentrations staying relatively constant over 
+            time. This could be due to those gas molecules being present in the regular atmosphere 
+            instead of a contribution from us. It could also be due to our gas emissions that are 
+            unaffected by the movie scenes being played."),
+        br(), 
+        p("On the other hand, certain compounds 
+            are noted to have a generally decreasing or increasing trend from the start to the end of a 
+            movie. These could be due to events happening over the course of the movie. When focusing on 
+            the scene labels, a general trend is noted whereby the fear scenes cluster at the end. This 
+            aligns with our expectations of movies becoming more exciting at the end."),
+        br(), 
+        p("For certain movies, in particular the horror movies, such compounds could be “fear compounds” 
+            which increased as the suspense grew near the end of the movie. In this list, the most probable 
+            movies to incite fear would be the horror movie – “Paranormal Activity: The Marked Ones”. Thus, 
+            probable “fear compounds” include m/z = 31.0178, 39, 42.0338, 44.9998, 45.0335, 47.0491, 48.0542, 
+            49.0578, 57.0699, 65.0603, 75.0478, and 79.0542 and more. A trend can be observed in the m/z value 
+            and could potentially suggest a link."),
+        br(), 
+        p("Across the different compounds, there are also a few similar patterns in certain compounds’ 
+            evolution over time. These could be due to the compounds coming from the same source – a larger 
+            gas molecule which they fragmented from, due to the features of mass spectrometry. One example of such 
+            trends is the evolution of compounds with m/z 57.0699 and 79.0542 over the duration of “Paranormal Activity: 
+            The Marked Ones”.")
       )
     ),
     
@@ -179,6 +269,16 @@ ui <- fluidPage(
 server <- function(input, output, session){
   #https://mastering-shiny.org/action-graphics.html
   
+  observeEvent(input$mz_def, {
+    showModal(
+      modalDialog(
+        p("m/z can be generally regarded as the mass since most compounds reaching the
+          detector have a charge of 1"), 
+        footer = modalButton("Done")
+      )
+    )
+  })
+  
   fear_labels <- reactive(input$whats_fear)
 
   #Screen 1
@@ -198,11 +298,21 @@ server <- function(input, output, session){
       dplyr::filter(is.fear == "Fear") %>%
       arrange(desc(fraction)))
   
+  screen_2_fear_cmpd_ranked <- reactive(
+    ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      {if(input$graph_2_conversation) dplyr::filter(.,grepl(paste(label_set$label[!label_set$label %in% c("conversation: general", "conversation: conversation main actor")], collapse="|"),label)) else(.)} %>%
+      select(matches("^\\d")) %>% 
+      {if(input$graph_2_noise) select_if(., where(~any(.x>0.5))) else(.)} %>%
+      colnames() %>%
+      factor(levels = fear_cmpd_ranked()$cmpd, ordered=TRUE) %>%
+      sort())
+  
   # Interactive UI (Screen 2)
   output$select_screen_2 <- renderUI({
     selectInput(inputId = "graph_2_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked()$cmpd)
+                choices = screen_2_fear_cmpd_ranked())
   })
   
   # Interactive UI (Screen 4)
@@ -233,7 +343,7 @@ server <- function(input, output, session){
       labs(title = paste("Top",user_start_rank_1(),"to",user_end_rank_1(),"Most Frequently Emitted Compounds when in Fear"),
            subtitle = "Identified by distribution across different types of scenes",
            y = "m/z of Compound", 
-           x = "Fraction of the Total Concentration") + 
+           x = "Fraction of Concentration in Fear Scenes") + 
       theme(panel.background = element_blank(),
             axis.ticks.y = element_blank(),
             axis.title.y = element_text(margin = margin(r = 10)),
@@ -247,9 +357,8 @@ server <- function(input, output, session){
   #Screen 2
   #For user input in shiny
   user_cmpd_2 <- reactive(input$graph_2_cmpd)
-  zeros <- reactive(input$graph_2_checkbox) #FALSE means do not exclude zeros
   
-  output$graph_2 <- renderPlot({
+  output$graph_2a <- renderPlot({
     ms_data %>% 
       dplyr::filter(!is.na(label)) %>%
       select(user_cmpd_2(),movie_F_ind, label) %>%
@@ -258,22 +367,40 @@ server <- function(input, output, session){
         names_to = "cmpd",
         values_to = "conc"
       ) %>% 
-      { if(zeros()) dplyr::filter(.,conc>0) else(.)} %>%
+      {if(input$graph_2_noise) dplyr::filter(.,conc>0.5) else(.)} %>%
       mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>%
       select(-conc, -movie_F_ind, -cmpd) %>%
       separate_longer_delim(
         cols = label,
         delim = "; "
       ) %>% 
+      {if(input$graph_2_conversation) dplyr::filter(., label != "conversation: general", label != "conversation: conversation main actor") else(.)} %>% 
       ggplot(aes(x=conc_perpax, y=label)) + 
       geom_hex() +
       labs(title = paste("Distribution of compound with m/z =",user_cmpd_2(),"across different scenes"),
-           subtitle = paste(if_else(zeros() == FALSE, "Excludes", "Includes"), "data points where compound is absent"),
+           subtitle = paste(if_else(input$graph_2_conversation, "Excludes", "Includes"), "data points where compound concentration < 1"),
            y = "Type of Scene", 
            x = "Concentration per Pax per Scene") + 
       scale_fill_gradientn(colours = colour_gradient) + 
       theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))))
     })
+  
+  output$graph_2b <- renderPlot({
+    ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      select(label) %>%
+      separate_longer_delim(
+        cols = label,
+        delim = "; "
+      ) %>%
+      ggplot(aes(y=label)) +
+      geom_bar(fill = colour_palette[1]) +
+      labs(title = paste("Distribution of scenes"),
+           y = "Type of Scene", 
+           x = "Count") + 
+      theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))),
+            panel.background = element_blank())
+  })
   
   #Screen 3
   #For user input in Shiny
@@ -464,7 +591,7 @@ server <- function(input, output, session){
                          "across duration of", 
                          user_movie_4()),
            subtitle = "Each screening is represented by a line graph.",
-           y = "Concentration per Scene", 
+           y = "Concentration per Pax per Scene", 
            x = "Duration of Movie (min)",
            color = "Screening",
            fill = "Type of Scene") + 

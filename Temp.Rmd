@@ -41,6 +41,7 @@ for(i in c("ms_data","screen_times","label_set")){
 fear_labels <- grep("death|suspense|horror|murder|aggressive|violence|shock", 
                     label_set$label, 
                     value=TRUE)
+ms_data %>% dplyr::filter(movie == "Paranormal Activity: The Marked Ones") %>% distinct(label)
 
 fear_cmpd_ranked <-
     ms_data %>% 
@@ -57,8 +58,53 @@ fear_cmpd_ranked <-
       ) %>% 
       dplyr::filter(is.fear == "Fear") %>%
       arrange(desc(fraction))
+ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      mutate(is.fear = if_else(grepl(paste(fear_labels, collapse="|"),label),"Fear","Others")) %>%
+      group_by(is.fear)%>%
+      reframe(across(matches("^\\d"), sum)) %>%
+      reframe(across(matches("^\\d"),function(x){x/sum(x)})) %>%
+      mutate(is.fear=c("Fear","Others")[row_number(`14.0028`)]) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "fraction"
+      ) %>% 
+      dplyr::filter(is.fear == "Fear") %>%
+      arrange(desc(fraction)) %>%
+      mutate(fraction=fct_inorder(fraction,levels=fr))
 
 
+ms_data %>% 
+    dplyr::filter(!is.na(label)) %>%
+    pivot_longer(
+      cols = matches("^\\d"),
+      names_to = "cmpd",
+      values_to = "conc"
+    ) %>% 
+    {if(Y) dplyr::filter(., conc > 1) else(.)} %>%
+    distinct(cmpd) %>%
+    '[['("cmpd") %>%
+      factor(levels = fear_cmpd_ranked$cmpd, ordered=TRUE) %>%
+  sort()
+fear_cmpd_ranked$cmpd
+Y <- TRUE  
+
+fear_cmpd_ranked <-
+    ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      mutate(is.fear = if_else(grepl(paste(fear_labels, collapse="|"),label),"Fear","Others")) %>%
+      group_by(is.fear)%>%
+      reframe(across(matches("^\\d"), sum)) %>%
+      reframe(across(matches("^\\d"),function(x){x/sum(x)})) %>%
+      mutate(is.fear=c("Fear","Others")[row_number(`14.0028`)]) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "fraction"
+      ) %>% 
+      dplyr::filter(is.fear == "Fear") %>%
+      arrange(desc(fraction))
 
 # Labelled ms_data (Only 6 diff movies)
 labelled_ms <- ms_data %>% 
@@ -127,6 +173,54 @@ fear_cmpd_ranked %>%
         ) + 
   scale_x_continuous(expand = c(0, 0))
 
+ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      select(label) %>%
+      separate_longer_delim(
+        cols = label,
+        delim = "; "
+      ) %>%
+      ggplot(aes(y=label)) +
+      geom_bar(fill = colour_palette[1]) +
+      labs(title = paste("Distribution of scenes"),
+           y = "Type of Scene", 
+           x = "Count") + 
+      theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))),
+            panel.background = element_blank())
+
+
+
+%>%
+  select_if(where(~(all(.x<0.5))))
+  
+  
+ms_data %>%
+    pivot_longer(
+      cols = matches("^\\d"),
+      names_to = "cmpd",
+      values_to = "conc"
+    ) %>% 
+    {if(Y) dplyr::filter(., conc > 0.5) else(.)} %>%
+    separate_longer_delim(
+      cols = label,
+      delim = "; "
+    ) %>% 
+    {if(Y) dplyr::filter(., label != "conversation: general", label != "conversation: conversation main actor") else(.)} %>% 
+    distinct(cmpd) %>%
+    '[['("cmpd") %>%
+      factor(levels = fear_cmpd_ranked$cmpd, ordered=TRUE) %>%
+      sort()
+
+#NEW
+ms_data %>% 
+  dplyr::filter(!is.na(label)) %>%
+  {if(Y) dplyr::filter(.,grepl(paste(label_set$label[!label_set$label %in% c("conversation: general", "conversation: conversation main actor")], collapse="|"),label)) else(.)} %>%
+  select(matches("^\\d")) %>% 
+  select_if(., where(~any(.x>0.5))) %>%
+  colnames() %>%
+  factor(levels = fear_cmpd_ranked$cmpd, ordered=TRUE) %>%
+  sort()
+
 #scale_fill_manual(values=c("red","blue")
 #scale_x_discrete(guide=guide_axis(angle=90))
 #scale_fill_brewer(palette="Set3")
@@ -151,6 +245,11 @@ select_to_plot_1 <- graph_1[c(user_start_rank_1:user_end_rank_1, (length(graph_1
             plot.subtitle = element_text(margin = margin(b = 10))
       ) + 
       scale_x_continuous(expand = c(0, 0))
+    
+    ms_data %>% 
+    dplyr::filter(!is.na(label), grepl(paste(
+label_set$label[!label_set$label %in% c("conversation: general")], collapse="|"),label)) %>%
+  select_if(where(~all(.x<0.5)))
 ```
 
 ```{r}
@@ -164,6 +263,7 @@ select_to_plot_1 <- graph_1[c(user_start_rank_1:user_end_rank_1, (length(graph_1
 #For user input in Shiny (TODO)
 user_cmpd_2 <- "60.0490"
 user_cmpd_2 <- "235.1928"
+user_cmpd_2 <- "48.0205"
 
 Y <- TRUE
 ms_data %>% 
@@ -233,6 +333,33 @@ graph_2t %>%
        y = "Type of Scene", 
        x = "Concentration per Pax per Scene") + 
   scale_fill_gradientn(colours = colour_gradient)
+
+ms_data %>% 
+      dplyr::filter(!is.na(label)) %>%
+      select(user_cmpd_2,movie_F_ind, label) %>%
+      pivot_longer(
+        cols = matches("^\\d"),
+        names_to = "cmpd",
+        values_to = "conc"
+      ) %>% 
+      {if(Y) dplyr::filter(.,conc>0) else(.)} %>%
+      {if(Y) dplyr::filter(.,conc>1) else(.)}%>%
+      mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>%
+      select(-conc, -movie_F_ind, -cmpd)
+%>%
+      separate_longer_delim(
+        cols = label,
+        delim = "; "
+      ) %>% 
+      {if(Y) dplyr::filter(., label != "conversation: general", label != "conversation: conversation main actor") else(.)} %>% 
+      ggplot(aes(x=conc_perpax, y=label)) + 
+      geom_hex() +
+      labs(title = paste("Distribution of compound with m/z =",user_cmpd_2,"across different scenes"),
+           subtitle = paste(if_else(Y, "Excludes", "Includes"), "data points where compound is absent"),
+           y = "Type of Scene", 
+           x = "Concentration per Pax per Scene") + 
+      scale_fill_gradientn(colours = colour_gradient) + 
+      theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))))
 ```
 
 ```{r}
