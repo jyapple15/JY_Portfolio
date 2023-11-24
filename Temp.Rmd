@@ -317,6 +317,22 @@ ms_data %>%
        x = "Concentration per Pax perScene") + 
   scale_fill_gradientn(colours = colour_gradient)
 
+ms_data %>% 
+      dplyr::filter(!is.na(label), movie == "Paranormal Activity: The Marked Ones") %>%
+      select(label) %>%
+      separate_longer_delim(
+        cols = label,
+        delim = "; "
+      ) %>%
+      ggplot(aes(y=label)) +
+      geom_bar(fill = colour_palette[1]) +
+      labs(title = paste("Distribution of scenes"),
+           y = "Type of Scene", 
+           x = "Count") + 
+      theme(axis.line = element_line(linewidth = 0.3, arrow = arrow(type='closed', length = unit(5,'pt'))),
+            panel.background = element_blank())
+
+
 zeros <- TRUE
 if(zeros == TRUE){
   graph_2t <- tidied_labelled_ms %>% dplyr::filter(conc > 0)
@@ -345,8 +361,7 @@ ms_data %>%
       {if(Y) dplyr::filter(.,conc>0) else(.)} %>%
       {if(Y) dplyr::filter(.,conc>1) else(.)}%>%
       mutate(conc_perpax = conc/screen_times$number.visitors[movie_F_ind]) %>%
-      select(-conc, -movie_F_ind, -cmpd)
-%>%
+      select(-conc, -movie_F_ind, -cmpd) %>%
       separate_longer_delim(
         cols = label,
         delim = "; "

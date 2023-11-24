@@ -171,25 +171,23 @@ ui <- fluidPage(
         )
       ),
       div(
+        br(),
         p("From the plots, we can see that there is not clear trend for most compounds.  
             However, most plots have gas compound concentrations staying relatively constant over 
             time. This could be due to those gas molecules being present in the regular atmosphere 
             instead of a contribution from us. It could also be due to our gas emissions that are 
-            unaffected by the movie scenes being played."),
-        br(), 
+            unaffected by the movie scenes being played."), 
         p("On the other hand, certain compounds 
             are noted to have a generally decreasing or increasing trend from the start to the end of a 
             movie. These could be due to events happening over the course of the movie. When focusing on 
             the scene labels, a general trend is noted whereby the fear scenes cluster at the end. This 
             aligns with our expectations of movies becoming more exciting at the end."),
-        br(), 
         p("For certain movies, in particular the horror movies, such compounds could be “fear compounds” 
             which increased as the suspense grew near the end of the movie. In this list, the most probable 
             movies to incite fear would be the horror movie – “Paranormal Activity: The Marked Ones”. Thus, 
             probable “fear compounds” include m/z = 31.0178, 39, 42.0338, 44.9998, 45.0335, 47.0491, 48.0542, 
             49.0578, 57.0699, 65.0603, 75.0478, and 79.0542 and more. A trend can be observed in the m/z value 
             and could potentially suggest a link."),
-        br(), 
         p("Across the different compounds, there are also a few similar patterns in certain compounds’ 
             evolution over time. These could be due to the compounds coming from the same source – a larger 
             gas molecule which they fragmented from, due to the features of mass spectrometry. One example of such 
@@ -201,7 +199,7 @@ ui <- fluidPage(
     #Screen 4
     screen(
       div(
-        p("This is the 4th chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+        p("To get a better idea regarding the distribution of those identified compounds, we can look into the different screenings of the same movie."),
       ),
       sidebarLayout(
         mainPanel(
@@ -215,19 +213,36 @@ ui <- fluidPage(
           radioButtons(
             inputId = "graph_4_movie",
             label = "Select a movie:",
-            choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie
+            choices = distinct(dplyr::filter(ms_data,!is.na(label)),movie)$movie,
+            selected = "Paranormal Activity: The Marked Ones"
           ),
           actionButton(inputId = "graph_4_modify", 
                        label = "Modify Screenings"),
           uiOutput("select_screen_4")
         )
+      ),
+      div(
+        p("Upon doing so, we can see a difference in the screenings. For some, a higher average is 
+        observed. One example is in the distribution of most compounds over the duration of screening 
+        no. 100 of “Paranormal Activity: The Marked Ones”. Upon closer investigation, it is noted that 
+        that screening stood out as having significantly fewer cinema goers. This suggests that the lower 
+        occupancy of the room could have influenced each person unconsciously exhale more. Since this 
+        trend can also be found for the other movies, it is unlikely to suggest higher induced fear. 
+        Instead, it suggests a different social influence."),
+        p("Moreover, when analysing the previously identified compounds – such as that with m/z = 42.0338, 
+        a pattern can be observed whereby its concentration increases within the fear bands. This suggests
+        a gradual increase in those emissions as fear is gradually introduced in fear-inducing scenes and 
+        supports the identification of those compounds as fear compounds.")
       )
     ),
     
     #Screen 5
     screen(
       div(
-        p("This is the 5th chunk of words that I shall potentially write, look forward to it \n\n\n\n\n heyhey"),
+        p("From the previous data, we can see that the smell of fear definitely exists. Some possible 
+          “fear compounds” include those of m/z = 42.0338 and 44.9998. Now, how does this compare to 
+          other movies? In the data set used, information was collected for 16 different movies. However, 
+          scene labels were only recorded for the 6 movies we have been looking at. ")
       ),
       sidebarLayout(
         mainPanel(
@@ -252,6 +267,21 @@ ui <- fluidPage(
                         label = "Exclude zeros",
                         value = FALSE),
         )
+      ),
+      div(
+        br(),
+        p("Taking m/z = 42.0338 as a reference, we can see some disagreements with our expectations
+          as we compare the distributions across different movies. Some non-horror movies are noted
+          to have relatively high concentrations of this compound per scene. However, this could be 
+          due to a vagueness in scene labelling, as well as a difference number of screenings sampled. 
+          From our previous observations, these concentrations could also be higher in non-horror movies 
+          due to a difference in occupancy."),
+        p("Nonetheless, the horror movie “Carrie” is noted to have an average well above the other movies. 
+        This trend can also be observed in the plot against their fear ratings, suggesting that 42.03338 is a 
+        “fear compound”."),
+        p("Overall, it is clear that a “smell of fear” exists. However, considering that fear comes in a large 
+          variety of forms, more research is needed to correctly assign each chemical to a specific fear. Now, 
+          do you agree? Try adjusting the parameters to come to your own conclusion!")
       )
     )
   ),
@@ -312,21 +342,24 @@ server <- function(input, output, session){
   output$select_screen_2 <- renderUI({
     selectInput(inputId = "graph_2_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = screen_2_fear_cmpd_ranked())
+                choices = screen_2_fear_cmpd_ranked(),
+                selected = "42.0338")
   })
   
   # Interactive UI (Screen 4)
   output$select_screen_4 <- renderUI({
     selectInput(inputId = "graph_4_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked()$cmpd)
+                choices = fear_cmpd_ranked()$cmpd,
+                selected = "42.0338")
   })
   
   # Interactive UI (Screen 5)
   output$select_screen_5 <- renderUI({
     selectInput(inputId = "graph_5_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
-                choices = fear_cmpd_ranked()$cmpd)
+                choices = fear_cmpd_ranked()$cmpd,
+                selected = "42.0338")
   })
   
   #For user input in shiny 
