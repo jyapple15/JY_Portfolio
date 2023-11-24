@@ -343,7 +343,7 @@ server <- function(input, output, session){
     selectInput(inputId = "graph_2_cmpd",
                 label = "Choose a compound:\n(Arranged by expected fear rank)",
                 choices = screen_2_fear_cmpd_ranked(),
-                selected = "42.0338")
+                selected = "123.1168")
   })
   
   # Interactive UI (Screen 4)
