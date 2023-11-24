@@ -5,7 +5,7 @@ account: andrea-jy
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 10610099
-bundleId:
+bundleId: 7964893
 url: https://andrea-jy.shinyapps.io/datastoryT/
 version: 1
 asMultiple: FALSE
