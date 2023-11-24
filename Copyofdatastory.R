@@ -4,12 +4,11 @@ library(tidyverse)
 library(ggplot2)
 library(shinycssloaders)
 library(rlist)
-library(viridisLite)
 
 # Colour scheme (23 colours needed for palette)
-colour_palette <- plasma(23)
-colour_gradient <- plasma(3) #Low to high conc
-colour_bkg <- mako(2) #contrasting w each other and w palette
+colour_palette <- c("#a9a9f9","#009699","maroon","red","orange","yellow","palegreen","green","lightblue","blue","purple","pink","green","lightblue","blue","purple","pink","pink","green","lightblue","blue","purple","pink")
+colour_gradient <- c("#009699","royalblue","#a9a9f9") #Low to high conc
+colour_bkg <- c("#a9a9f9","#009699") #contrasting w each other and w palette
 
 # Importing Snipped Datasets
 for(i in c("ms_data","screen_times","label_set")){
@@ -34,17 +33,17 @@ ui <- fluidPage(
     #Screen 0
     screen(
       div(
-        p("???The smell of fear??? ??? a common phrase used to imply that one???s fear can be detected."),
+        p("\"The smell of fear\" a common phrase used to imply that one\'s fear can be detected."),
         br(),
         p("Some think of it as a metaphor of sorts. Meanwhile, some say that other living things
           such as bears and dogs can smell your fear. Have you ever wondered if this is true? Does
-          the ???smell of fear??? actually exist? Well, let???s break it down."),
+          the \"The smell of fear\" actually exist? Well, let\'s break it down."),
         tags$table(
           tags$tbody(
             tags$td(
               p("A smell of fear can possibly come about from chemicals excreted by our bodies. These are
                 then detected by the olfactory receptors such as those in our noses, leading to what we 
-                perceive as ???smell???. Thus, a smell of fear would be detectable by analysing the gas around
+                perceive as \"smell\". Thus, a smell of fear would be detectable by analysing the gas around
                 a person in fear. Using this concept, a group of researchers sampled the gas emitted in the
                 Cinestar Cinema in Mainz, Germany over 1.5 months every 30s (Wicker et al., 2015). These 
                 samples were then input into a mass spectrometer (PTR-MS-ToF) to obtain the", actionLink(inputId = "mz_def", label="mass to charge 
@@ -64,7 +63,7 @@ ui <- fluidPage(
     screen(
       div(
         p("Firstly, we need to decide what we count as a fear-inducing scene. When we define those as the scenes involving those at the bottom, 
-          we see that the top ranked ???fear compounds??? are as follows. Try modifying the fear-inducing scenes at the bottom of this screen!"),
+          we see that the top ranked \"fear compounds\" are as follows. Try modifying the fear-inducing scenes at the bottom of this screen!"),
         br()
       ),
       sidebarLayout(
@@ -92,9 +91,9 @@ ui <- fluidPage(
         
         p("Unfortunately, this plot is skewed as some compounds are relatively absent in our data set. 
           This means that the fraction is calculated from few data points and may 
-          not be an accurate representation of the compound???s distribution across 
-          scenes. In addition, scenes labelled with both ???fear??? and ???non-fear labels??? 
-          are overall considered as ???fear scenes???. This might lead to an overrepresentation of ???fear scenes???.")
+          not be an accurate representation of the compound\'s distribution across 
+          scenes. In addition, scenes labelled with both \"fear\" and \"non-fear labels\"
+          are overall considered as \"fear scenes\". This might lead to an overrepresentation of \"fear scenes\".")
       )
     ),
     
@@ -147,7 +146,7 @@ ui <- fluidPage(
     #Screen 3
     screen(
       div(
-        p("Let???s try to keep one other variable constant ??? the movie."),
+        p("Let\'s try to keep one other variable constant - the movie."),
       ),
       sidebarLayout(
         mainPanel(
@@ -186,17 +185,17 @@ ui <- fluidPage(
             movie. These could be due to events happening over the course of the movie. When focusing on 
             the scene labels, a general trend is noted whereby the fear scenes cluster at the end. This 
             aligns with our expectations of movies becoming more exciting at the end."),
-        p("For certain movies, in particular the horror movies, such compounds could be ???fear compounds??? 
+        p("For certain movies, in particular the horror movies, such compounds could be \"fear compounds\" 
             which increased as the suspense grew near the end of the movie. In this list, the most probable 
-            movies to incite fear would be the horror movie ??? ???Paranormal Activity: The Marked Ones???. Thus, 
-            probable ???fear compounds??? include m/z = 31.0178, 39, 42.0338, 44.9998, 45.0335, 47.0491, 48.0542, 
+            movies to incite fear would be the horror movie - \"Paranormal Activity: The Marked Ones\". Thus, 
+            probable \"fear compounds\" include m/z = 31.0178, 39, 42.0338, 44.9998, 45.0335, 47.0491, 48.0542, 
             49.0578, 57.0699, 65.0603, 75.0478, and 79.0542 and more. A trend can be observed in the m/z value 
             and could potentially suggest a link."),
-        p("Across the different compounds, there are also a few similar patterns in certain compounds??? 
-            evolution over time. These could be due to the compounds coming from the same source ??? a larger 
+        p("Across the different compounds, there are also a few similar patterns in certain compounds\'
+            evolution over time. These could be due to the compounds coming from the same source - a larger 
             gas molecule which they fragmented from, due to the features of mass spectrometry. One example of such 
-            trends is the evolution of compounds with m/z 57.0699 and 79.0542 over the duration of ???Paranormal Activity: 
-            The Marked Ones???.")
+            trends is the evolution of compounds with m/z 57.0699 and 79.0542 over the duration of \"Paranormal Activity: 
+            The Marked Ones\".")
       )
     ),
     
@@ -228,12 +227,12 @@ ui <- fluidPage(
       div(
         p("Upon doing so, we can see a difference in the screenings. For some, a higher average is 
         observed. One example is in the distribution of most compounds over the duration of screening 
-        no. 100 of ???Paranormal Activity: The Marked Ones???. Upon closer investigation, it is noted that 
+        no. 100 of \"Paranormal Activity: The Marked Ones\". Upon closer investigation, it is noted that 
         that screening stood out as having significantly fewer cinema goers. This suggests that the lower 
         occupancy of the room could have influenced each person unconsciously exhale more. Since this 
         trend can also be found for the other movies, it is unlikely to suggest higher induced fear. 
         Instead, it suggests a different social influence."),
-        p("Moreover, when analysing the previously identified compounds ??? such as that with m/z = 42.0338, 
+        p("Moreover, when analysing the previously identified compounds - such as that with m/z = 42.0338, 
         a pattern can be observed whereby its concentration increases within the fear bands. This suggests
         a gradual increase in those emissions as fear is gradually introduced in fear-inducing scenes and 
         supports the identification of those compounds as fear compounds.")
@@ -244,7 +243,7 @@ ui <- fluidPage(
     screen(
       div(
         p("From the previous data, we can see that the smell of fear definitely exists. Some possible 
-          ???fear compounds??? include those of m/z = 42.0338 and 44.9998. Now, how does this compare to 
+          \"fear compounds\" include those of m/z = 42.0338 and 44.9998. Now, how does this compare to 
           other movies? In the data set used, information was collected for 16 different movies. However, 
           scene labels were only recorded for the 6 movies we have been looking at. ")
       ),
@@ -280,10 +279,10 @@ ui <- fluidPage(
           due to a vagueness in scene labelling, as well as a difference number of screenings sampled. 
           From our previous observations, these concentrations could also be higher in non-horror movies 
           due to a difference in occupancy."),
-        p("Nonetheless, the horror movie ???Carrie??? is noted to have an average well above the other movies. 
+        p("Nonetheless, the horror movie \"Carrie\" is noted to have an average well above the other movies. 
         This trend can also be observed in the plot against their fear ratings, suggesting that 42.03338 is a 
-        ???fear compound???."),
-        p("Overall, it is clear that a ???smell of fear??? exists. However, considering that fear comes in a large 
+        \"fear compound\"."),
+        p("Overall, it is clear that a \"smell of fear\" exists. However, considering that fear comes in a large 
           variety of forms, more research is needed to correctly assign each chemical to a specific fear. Now, 
           do you agree? Try adjusting the parameters to come to your own conclusion!")
       )
