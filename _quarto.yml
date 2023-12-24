@@ -10,6 +10,8 @@ website:
         text: About
       - href: nm2207.qmd
         text: NM2207
+      - href: planner.qmd
+        text: Projects
 
 format:
   html:
