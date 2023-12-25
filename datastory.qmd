@@ -1,11 +1,14 @@
 ---
 title: "Is the smell of fear real?"
+description: A data story created using R, including packages such as ggplot2 and shiny. 
+categories: Code
+date: 12/26/2023
 filters: 
   - shinylive
 ---
 
 <h3>Description</h3>
-<p>This is a datastory that aims to answer whether a smell of fear exists. It communicates insights from the data source named "<a href="https://www.kaggle.com/datasets/jswicker/the-smell-of-fear/">The Smell of Fear</a>". 
+<p>This is a data story that aims to answer whether a smell of fear exists. It communicates insights from the data source named "<a href="https://www.kaggle.com/datasets/jswicker/the-smell-of-fear/">The Smell of Fear</a>". 
 
 I created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.</p>
 

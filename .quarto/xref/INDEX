@@ -28,5 +28,15 @@
   },
   "templates/projects.qmd": {
     "projects.html": "97d2eeb5"
+  },
+  "project_templates/planner.qmd": {
+    "planner.html": "6a9745c4"
+  },
+  "project_templates/datastory.qmd": {
+    "datastory.html": "1fe9ab10"
+  },
+  "resume.qmd": {
+    "resume.tex": "3c280619",
+    "resume.html": "dc85e8c6"
   }
 }

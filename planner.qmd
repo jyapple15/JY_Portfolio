@@ -1,5 +1,8 @@
 ---
 title: "MY Planner"
+description: A web application created using Python, HTML, CSS, Javascript, and SQL. 
+categories: Code
+date: 06/30/2021
 ---
 
 <h3>Description</h3>

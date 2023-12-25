@@ -1,7 +1,12 @@
 ---
 title: "Projects"
 listing:
-  contents:
+  contents: 
     - "datastory.qmd"
     - "planner.qmd"
+  type: grid
+  sort: "date desc"
+  categories: true
+  date-format: "YYYY"
+  fields: [image, date, title, description, categories]
 ---
