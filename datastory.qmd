@@ -20,7 +20,7 @@ I created it as a part of my final project in the module NM2207 Computational Me
 </center>
 
 <h3>Code</h3>
-<a href="https://github.com/jyapple15/JY_Portfolio/tree/main/datastory">Source Code</a>
+<a href="https://github.com/jyapple15/NM2207_Datastory">Source Code</a>
 
 <!--<iframe height="150%" width="100%" frameborder="no" src="https://andrea-jy.shinyapps.io/datastory/"></iframe>-->
 
