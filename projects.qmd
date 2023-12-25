@@ -1,0 +1,7 @@
+---
+title: "Projects"
+listing:
+  contents:
+    - "datastory.qmd"
+    - "planner.qmd"
+---

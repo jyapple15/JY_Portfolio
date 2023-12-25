@@ -1,0 +1,13 @@
+{
+  "listingMap": {
+    "projects.qmd": [
+      "nm2207.qmd",
+      "planner.qmd",
+      "datastory.qmd"
+    ],
+    "templates\\projects.qmd": [
+      "nm2207.qmd",
+      "planner.qmd"
+    ]
+  }
+}

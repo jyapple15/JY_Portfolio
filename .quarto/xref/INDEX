@@ -19,5 +19,14 @@
   },
   "planner.qmd": {
     "planner.html": "24cd455d"
+  },
+  "projects.qmd": {
+    "projects.html": "78da441d"
+  },
+  "templates/index.qmd": {
+    "index.html": "459b0b3f"
+  },
+  "templates/projects.qmd": {
+    "projects.html": "97d2eeb5"
   }
 }

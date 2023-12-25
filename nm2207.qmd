@@ -13,7 +13,7 @@ This final project communicates insights from the data source named "<a href="ht
 <!--https://www.linkedin.com/pulse/smelling-fear-fearing-smells-penny-williams-->
 <center>
 <a href="datastory.qmd">
-<img src="The_Smell_of_Fear_edited.jpg" width=80% class="button">
+<img src="src/img/The_Smell_of_Fear_edited.jpg" width=80% class="button">
 </img>
 </a>
 <br>

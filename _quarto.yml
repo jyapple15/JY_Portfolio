@@ -7,17 +7,15 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: About
-      - href: nm2207.qmd
-        text: NM2207
-      - href: planner.qmd
+        text: About Me
+      - href: projects.qmd
         text: Projects
 
 format:
   html:
     theme: minty
     # or maybe minty or vapor?
-    css: styles.css
+    css: src/styles.css
     toc: true
 
 editor: visual
