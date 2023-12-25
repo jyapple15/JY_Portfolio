@@ -9,7 +9,18 @@ filters:
 
 I created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.</p>
 
-<h3>Product</h3>
-<iframe height="150%" width="100%" frameborder="no" src="https://andrea-jy.shinyapps.io/datastory/"></iframe> <br>
-<a href="https://github.com/jyapple15/jyapple15.github.io/datastory">Source Code</a>
+<h3>Product</h3> <br>
+<center>
+<a href="https://andrea-jy.shinyapps.io/datastory/">
+<img src="src/img/The_Smell_of_Fear_edited.jpg" width=80% class="button">
+</img>
+</a>
+<br>
+<small>Image by Richard Osborne</small>
+</center>
+
+<h3>Code</h3>
+<a href="https://github.com/jyapple15/JY_Portfolio/tree/main/datastory">Source Code</a>
+
+<!--<iframe height="150%" width="100%" frameborder="no" src="https://andrea-jy.shinyapps.io/datastory/"></iframe>-->
 

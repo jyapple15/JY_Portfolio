@@ -39,6 +39,13 @@
     "href": "planner.html",
     "title": "MY Planner",
     "section": "",
-    "text": "Description\n\n\nThis is a web application I developed in 2021 as my final project in the online course - CS50x. It is a digital planner designed to ease users’ daily planning of activities, down to the minute.\n\n\nGuide\n\nVideo\n\nProduct\n\nLink to MY Planner  Source Code"
+    "text": "Description\n\n\nThis is a web application I developed in 2021 as my final project in the online course - CS50x. It is a digital planner designed to ease users’ daily planning of activities, down to the minute.\n\n\nGuide\n\nVideo\n\nProduct\n\nLink to MY Planner\n\nCode\n\nSource Code"
+  },
+  {
+    "objectID": "datastory.html",
+    "href": "datastory.html",
+    "title": "Is the smell of fear real?",
+    "section": "",
+    "text": "Description\n\n\nThis is a datastory that aims to answer whether a smell of fear exists. It communicates insights from the data source named “The Smell of Fear”.\nI created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.\n\n\nProduct\n\n\n\n     Image by Richard Osborne\n\n\nCode\n\nSource Code"
   }
 ]
