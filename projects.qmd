@@ -8,5 +8,5 @@ listing:
   sort: "date desc"
   categories: true
   date-format: "YYYY"
-  fields: [image, date, title, description, categories]
+  fields: [image, date, title, subtitle, categories]
 ---

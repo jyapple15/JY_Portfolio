@@ -25,7 +25,7 @@
     "href": "projects.html",
     "title": "Projects",
     "section": "",
-    "text": "Is the smell of fear real?\n\n\n\nCode\n\n\n\nA data story created using R, including packages such as ggplot2 and shiny.\n\n\n\n2023\n\n\n\n\n\n\n\n\n\n\n\n\nMY Planner\n\n\n\nCode\n\n\n\nA web application created using Python, HTML, CSS, Javascript, and SQL.\n\n\n\n2021\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "The Smell of Fear\n\n\nA data story created using R, including packages such as ggplot2 and shiny.\n\n\n\nCode\n\n\nData Analysis\n\n\n\n\n2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMY Planner\n\n\nA web application created using Python, HTML, CSS, Javascript, and SQL.\n\n\n\nCode\n\n\n\n\n2021\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "nm2207.html",
@@ -44,7 +44,7 @@
   {
     "objectID": "datastory.html",
     "href": "datastory.html",
-    "title": "Is the smell of fear real?",
+    "title": "The Smell of Fear",
     "section": "",
     "text": "Description\n\n\nThis is a data story that aims to answer whether a smell of fear exists. It communicates insights from the data source named “The Smell of Fear”.\nI created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.\n\n\nProduct\n\n\n\n     Image by Richard Osborne\n\n\nCode\n\nSource Code"
   },

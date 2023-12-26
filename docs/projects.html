@@ -71,7 +71,7 @@ ul.task-list li input[type="checkbox"] {
     }
 
     const options = {
-      valueNames: ['listing-image','listing-date','listing-title','listing-description','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      valueNames: ['listing-image','listing-date','listing-title','listing-subtitle','listing-categories',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
       
       searchColumns: ["listing-title","listing-author","listing-date","listing-image","listing-description","listing-categories"],
     };
@@ -135,7 +135,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Code">Code <span class="quarto-category-count">(2)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Code">Code <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Data Analysis">Data Analysis <span class="quarto-category-count">(1)</span></div></div></div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
@@ -162,21 +162,26 @@ ul.task-list li input[type="checkbox"] {
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
 <div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-categories="Code" data-listing-date-sort="1703520000000" data-listing-file-modified-sort="1703530823699" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="g-col-1" data-index="0" data-categories="Code,Data Analysis" data-listing-date-sort="1703520000000" data-listing-file-modified-sort="1703615352661" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <a href="./datastory.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<p class="card-img-top"><img src="src\img\The_Smell_of_Fear_edited.jpg" style="height: 150px;"  class="thumbnail-image card-img"/></p>
+<p class="card-img-top">
+<img src="./src/img/The_Smell_of_Fear_Cover.jpg" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
-Is the smell of fear real?
+The Smell of Fear
 </h5>
+<div class="card-subtitle listing-subtitle">
+A data story created using R, including packages such as ggplot2 and shiny.
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Code'); return false;">
 Code
 </div>
+<div class="listing-category" onclick="window.quartoListingCategory('Data Analysis'); return false;">
+Data Analysis
 </div>
-<div class="card-text listing-description">
-A data story created using R, including packages such as ggplot2 and shiny.
 </div>
 <div class="card-attribution card-text-small end">
 <div class="listing-date">
@@ -187,21 +192,23 @@ A data story created using R, including packages such as ggplot2 and shiny.
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="1" data-categories="Code" data-listing-date-sort="1624982400000" data-listing-file-modified-sort="1703531196735" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
+<div class="g-col-1" data-index="1" data-categories="Code" data-listing-date-sort="1624982400000" data-listing-file-modified-sort="1703615820970" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="1">
 <a href="./planner.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
-<div class="listing-item-img-placeholder card-img-top" style="height: 150px;">&nbsp;</div>
+<p class="card-img-top">
+<img src="./src/img/MY_Planner_Cover.jpg" class="thumbnail-image card-img" style="height: 150px;">
+</p>
 <div class="card-body post-contents">
 <h5 class="no-anchor card-title listing-title">
 MY Planner
 </h5>
+<div class="card-subtitle listing-subtitle">
+A web application created using Python, HTML, CSS, Javascript, and SQL.
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Code'); return false;">
 Code
 </div>
-</div>
-<div class="card-text listing-description">
-A web application created using Python, HTML, CSS, Javascript, and SQL.
 </div>
 <div class="card-attribution card-text-small end">
 <div class="listing-date">

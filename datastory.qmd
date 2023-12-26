@@ -1,8 +1,10 @@
 ---
-title: "Is the smell of fear real?"
-description: A data story created using R, including packages such as ggplot2 and shiny. 
-categories: Code
+title: "The Smell of Fear"
+image: src/img/The_Smell_of_Fear_Cover.jpg
+subtitle: A data story created using R, including packages such as ggplot2 and shiny.
 date: 12/26/2023
+date-format: "YYYY"
+categories: [Code, Data Analysis]
 filters: 
   - shinylive
 ---
