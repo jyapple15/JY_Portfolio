@@ -8,19 +8,9 @@
   border-radius: 25px;
 }
 
-.left-centered {
-  position: absolute; 
-  top: 45%; 
-  transform: translate(0,-80%);
-}
-
-.right-centered {
-  position: absolute; top: 45%; right: 0%; transform: translate(0,-80%);
-}
-
-.glidecontent {
-  padding-left: 40px; 
-  padding-right: 40px; 
-  padding-bottom: 10px;
-  height: auto;
+/* To customise font on webpages */
+.listing-subtitle {
+  font-size: 9pt;
+  margin-top: 2px;
+  margin-bottom: 10px;
 }

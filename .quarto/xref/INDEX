@@ -38,5 +38,17 @@
   "resume.qmd": {
     "resume.tex": "3c280619",
     "resume.html": "dc85e8c6"
+  },
+  "BondBrush.qmd": {
+    "BondBrush.html": "82b76af2"
+  },
+  "projects/bondbrush.qmd": {
+    "bondbrush.html": "f4478be8"
+  },
+  "projects/datastory.qmd": {
+    "datastory.html": "920b7713"
+  },
+  "projects/planner.qmd": {
+    "planner.html": "eb3a1e68"
   }
 }

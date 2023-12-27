@@ -2,8 +2,7 @@
 title: "Projects"
 listing:
   contents: 
-    - "datastory.qmd"
-    - "planner.qmd"
+    - projects
   type: grid
   sort: "date desc"
   categories: true

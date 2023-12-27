@@ -1,0 +1,17 @@
+---
+title: "MY Planner"
+image: src/img/bondbrush/Team_oKAY_Cover.jpg
+subtitle: An innovative idea for the hair industry.
+date: 03/05/2023
+date-format: "YYYY"
+categories: [Ideation, AI]
+---
+
+<h3>Description</h3>
+<p>This is an idea I generated with 2 of my peers. It is a brush supported with AI, used to analyse the user's hair and scalp to provide further recommendations.</p>
+
+<h3>Pitch</h3>
+![](src/img/bondbrush/Team_oKAY_Pitch.mp4)
+
+<h3>Documentation</h3>
+<iframe height="131%" width="100%" frameborder="no" src="src/img/bondbrush/Team_oKAY_Slides.pdf"></iframe>

@@ -4,7 +4,8 @@
       "nm2207.qmd",
       "planner.qmd",
       "datastory.qmd",
-      "project_templates"
+      "project_templates",
+      "projects"
     ],
     "templates\\projects.qmd": [
       "nm2207.qmd",

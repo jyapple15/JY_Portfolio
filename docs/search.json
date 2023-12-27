@@ -1,17 +1,10 @@
 [
   {
-    "objectID": "templates/projects.html",
-    "href": "templates/projects.html",
+    "objectID": "projects.html",
+    "href": "projects.html",
     "title": "Projects",
     "section": "",
-    "text": "MY Planner\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\n  \n\n\n\n\nNM2207 Computational Media Literacy\n\n\n\n\n\n\n\n\n\n\n \n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "templates/index.html",
-    "href": "templates/index.html",
-    "title": "Hi, I’m Andrea!",
-    "section": "",
-    "text": "I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!"
+    "text": "The Smell of Fear\n\n\nA data story created using R, including packages such as ggplot2 and shiny.\n\n\n\nCode\n\n\nData Analysis\n\n\n\n\n2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMY Planner\n\n\nAn innovative idea for the hair industry.\n\n\n\nIdeation\n\n\nAI\n\n\n\n\n2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMY Planner\n\n\nA web application created using Python, HTML, CSS, Javascript, and SQL.\n\n\n\nCode\n\n\n\n\n2021\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "index.html",
@@ -21,38 +14,24 @@
     "text": "I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!"
   },
   {
-    "objectID": "projects.html",
-    "href": "projects.html",
-    "title": "Projects",
-    "section": "",
-    "text": "The Smell of Fear\n\n\nA data story created using R, including packages such as ggplot2 and shiny.\n\n\n\nCode\n\n\nData Analysis\n\n\n\n\n2023\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMY Planner\n\n\nA web application created using Python, HTML, CSS, Javascript, and SQL.\n\n\n\nCode\n\n\n\n\n2021\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
-    "objectID": "nm2207.html",
-    "href": "nm2207.html",
-    "title": "NM2207 Computational Media Literacy",
-    "section": "",
-    "text": "In this module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created a data story as my final project.\n\n Final Project This final project communicates insights from the data source named “The Smell of Fear”. It aims to answer the question whether a smell of fear exists.\n\n\n     Image by Richard Osborne\n\n\n To find out more about my work done in this module prior to this final project, click here!."
-  },
-  {
-    "objectID": "planner.html",
-    "href": "planner.html",
+    "objectID": "projects/bondbrush.html",
+    "href": "projects/bondbrush.html",
     "title": "MY Planner",
     "section": "",
-    "text": "Description\n\n\nThis is a web application I developed in 2021 as my final project in the online course - CS50x. It is a digital planner designed to ease users’ daily planning of activities, down to the minute.\n\n\nGuide\n\nVideo\n\nProduct\n\nLink to MY Planner\n\nCode\n\nSource Code"
+    "text": "Description\n\n\nThis is an idea I generated with 2 of my peers. It is a brush supported with AI, used to analyse the user’s hair and scalp to provide further recommendations.\n\n\nPitch\n\nVideo\n\nDocumentation"
   },
   {
-    "objectID": "datastory.html",
-    "href": "datastory.html",
+    "objectID": "projects/datastory.html",
+    "href": "projects/datastory.html",
     "title": "The Smell of Fear",
     "section": "",
     "text": "Description\n\n\nThis is a data story that aims to answer whether a smell of fear exists. It communicates insights from the data source named “The Smell of Fear”.\nI created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.\n\n\nProduct\n\n\n\n     Image by Richard Osborne\n\n\nCode\n\nSource Code"
   },
   {
-    "objectID": "project_templates/datastory.html",
-    "href": "project_templates/datastory.html",
-    "title": "Is the smell of fear real?",
+    "objectID": "projects/planner.html",
+    "href": "projects/planner.html",
+    "title": "MY Planner",
     "section": "",
-    "text": "Description\n\n\nThis is a datastory that aims to answer whether a smell of fear exists. It communicates insights from the data source named “The Smell of Fear”.\nI created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.\n\n\nProduct\n\n\n\n     Image by Richard Osborne\n\n\nCode\n\nSource Code"
+    "text": "Description\n\n\nThis is a web application I developed in 2021 as my final project in the online course - CS50x. It is a digital planner designed to ease users’ daily planning of activities, down to the minute.\n\n\nGuide\n\nVideo\n\nProduct\n\nLink to MY Planner\n\nCode\n\nSource Code"
   }
 ]

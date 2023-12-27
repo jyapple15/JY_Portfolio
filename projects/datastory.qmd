@@ -1,0 +1,31 @@
+---
+title: "The Smell of Fear"
+image: src/img/datastory/The_Smell_of_Fear_Cover.jpg
+subtitle: A data story created using R, including packages such as ggplot2 and shiny.
+date: 12/26/2023
+date-format: "YYYY"
+categories: [Code, Data Analysis]
+filters: 
+  - shinylive
+---
+
+<h3>Description</h3>
+<p>This is a data story that aims to answer whether a smell of fear exists. It communicates insights from the data source named "<a href="https://www.kaggle.com/datasets/jswicker/the-smell-of-fear/">The Smell of Fear</a>". 
+
+I created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.</p>
+
+<h3>Product</h3> <br>
+<center>
+<a href="https://andrea-jy.shinyapps.io/datastory/">
+<img src="src/img/datastory/The_Smell_of_Fear_edited.jpg" width=80% class="button">
+</img>
+</a>
+<br>
+<small>Image by Richard Osborne</small>
+</center>
+
+<h3>Code</h3>
+<a href="https://github.com/jyapple15/NM2207_Datastory">Source Code</a>
+
+<!--<iframe height="150%" width="100%" frameborder="no" src="https://andrea-jy.shinyapps.io/datastory/"></iframe>-->
+

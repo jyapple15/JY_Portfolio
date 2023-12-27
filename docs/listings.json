@@ -1,16 +1,10 @@
 [
   {
-    "listing": "/templates/projects.html",
-    "items": [
-      "/templates/planner.html",
-      "/templates/nm2207.html"
-    ]
-  },
-  {
     "listing": "/projects.html",
     "items": [
-      "/datastory.html",
-      "/planner.html"
+      "/projects/datastory.html",
+      "/projects/bondbrush.html",
+      "/projects/planner.html"
     ]
   }
 ]
