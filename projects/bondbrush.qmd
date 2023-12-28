@@ -14,6 +14,8 @@ categories: [Ideation, AI]
 ![](src/img/bondbrush/Team_oKAY_Pitch.mp4)
 
 <h3>Documentation</h3>
+<embed frameborder="no" src="src/img/bondbrush/Team_oKAY_Slides.pdf"></embed>
+
 <div class="container_172-5">
-<iframe class="responsive-iframe" frameborder="no" src="src/img/bondbrush/Team_oKAY_Slides.pdf"></iframe>
+<embed class="responsive-iframe" frameborder="no" src="src/img/bondbrush/Team_oKAY_Slides.pdf"></embed>
 </div>
