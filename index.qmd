@@ -12,7 +12,7 @@ about:
       href: https://github.com/jyapple15/
     - icon: file-text
       text: Resume
-      href: "resume.qmd"
+      href: https://jyapple15.github.io/JY_Portfolio/resume.html
 ---
 
 I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!
