@@ -14,3 +14,28 @@
   margin-top: 2px;
   margin-bottom: 10px;
 }
+
+/* Responsive iframe */
+.container_172-5 {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 172.5%;
+}
+
+.container_A4 {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding-top: 133%;
+}
+
+.responsive-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
