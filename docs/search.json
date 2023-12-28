@@ -32,6 +32,13 @@
     "href": "projects/bondbrush.html",
     "title": "MY Planner",
     "section": "",
-    "text": "Description\n\n\nThis is an idea I generated with 2 of my peers. It is a brush supported with AI, used to analyse the user’s hair and scalp to provide further recommendations.\n\n\nPitch\n\nVideo\n\nDocumentation"
+    "text": "Description\n\n\nThis is an idea I generated with 2 of my peers. It is a brush supported with AI, used to analyse the user’s hair and scalp to provide further recommendations.\n\n\nPitch\n\nVideo\n\nDocumentation\n\n\nNote: Document should consist of 3 pages. Otherwise, device used may not be compatible."
+  },
+  {
+    "objectID": "resume.html",
+    "href": "resume.html",
+    "title": "Resume",
+    "section": "",
+    "text": "Note: Document should consist of 2 pages. Otherwise, device used may not be compatible."
   }
 ]
