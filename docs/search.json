@@ -14,11 +14,11 @@
     "text": "I am a Year 3 student in NUS with a major in Chemistry and minors in Forensic Science and Interactive Media Development. I am interested in the consumer goods industry and enjoy crafts and puzzles in my free time. Feel free to navigate this website to learn more about myself and the works I have done!"
   },
   {
-    "objectID": "projects/bondbrush.html",
-    "href": "projects/bondbrush.html",
+    "objectID": "projects/planner.html",
+    "href": "projects/planner.html",
     "title": "MY Planner",
     "section": "",
-    "text": "Description\n\n\nThis is an idea I generated with 2 of my peers. It is a brush supported with AI, used to analyse the user’s hair and scalp to provide further recommendations.\n\n\nPitch\n\nVideo\n\nDocumentation"
+    "text": "Description\n\n\nThis is a web application I developed in 2021 as my final project in the online course - CS50x. It is a digital planner designed to ease users’ daily planning of activities, down to the minute.\n\n\nGuide\n\nVideo\n\nProduct\n\nLink to MY Planner\n\nCode\n\nSource Code"
   },
   {
     "objectID": "projects/datastory.html",
@@ -28,10 +28,10 @@
     "text": "Description\n\n\nThis is a data story that aims to answer whether a smell of fear exists. It communicates insights from the data source named “The Smell of Fear”.\nI created it as a part of my final project in the module NM2207 Computational Media Literacy. In the module, I learned to use R for data analysis and visualisation. Using the tools gained and further exploration of my own, I created this final project.\n\n\nProduct\n\n\n\n     Image by Richard Osborne\n\n\nCode\n\nSource Code"
   },
   {
-    "objectID": "projects/planner.html",
-    "href": "projects/planner.html",
+    "objectID": "projects/bondbrush.html",
+    "href": "projects/bondbrush.html",
     "title": "MY Planner",
     "section": "",
-    "text": "Description\n\n\nThis is a web application I developed in 2021 as my final project in the online course - CS50x. It is a digital planner designed to ease users’ daily planning of activities, down to the minute.\n\n\nGuide\n\nVideo\n\nProduct\n\nLink to MY Planner\n\nCode\n\nSource Code"
+    "text": "Description\n\n\nThis is an idea I generated with 2 of my peers. It is a brush supported with AI, used to analyse the user’s hair and scalp to provide further recommendations.\n\n\nPitch\n\nVideo\n\nDocumentation"
   }
 ]
