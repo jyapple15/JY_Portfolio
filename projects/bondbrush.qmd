@@ -1,5 +1,5 @@
 ---
-title: "MY Planner"
+title: "L'Oreal Brandstorm 2023 - Bond Brush"
 image: src/img/bondbrush/Team_oKAY_Cover.jpg
 subtitle: An innovative idea for the hair industry.
 date: 03/05/2023
