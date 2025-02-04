@@ -3,5 +3,5 @@ title: "Resume"
 ---
 <p style="font-size:70%; margin:2px;">Note: Document should consist of 1 page.</p>
 <div class="container_A4">
-<embed class="responsive-iframe" frameborder="no" src="src/img/Tan Jia Yi, Andrea_Resume_1PG"></embed>
+<embed class="responsive-iframe" frameborder="no" src="src/img/Tan Jia Yi, Andrea_Resume_1PG.pdf"></embed>
 </div>
