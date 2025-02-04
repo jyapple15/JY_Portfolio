@@ -1,7 +1,7 @@
 ---
 title: "Resume"
 ---
-<p style="font-size:70%; margin:2px;">Note: Document should consist of 2 pages. Otherwise, device used may not be compatible.</p>
+<p style="font-size:70%; margin:2px;">Note: Document should consist of 1 page. Otherwise, device used may not be compatible.</p>
 <div class="container_A4">
 <embed class="responsive-iframe" frameborder="no" src="src/img/Resume_Tan Jia Yi, Andrea_MAIN.pdf"></embed>
 </div>
